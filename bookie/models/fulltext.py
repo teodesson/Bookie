@@ -138,7 +138,7 @@ class WhooshFulltext(object):
 
             try:
                 res = search.search_page(qry, page, pagelen=int(ct))
-            except ValueError, exc:
+            except ValueError as exc:
                 raise(exc)
 
             if res:

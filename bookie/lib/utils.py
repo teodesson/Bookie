@@ -1,7 +1,7 @@
 """Generic and small utilities that are used in Bookie"""
 import re
-from urlparse import urlparse
-from urllib import quote
+from urllib.parse import urlparse
+from urllib.parse import quote
 from textblob import TextBlob
 
 

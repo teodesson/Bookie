@@ -2,7 +2,7 @@
 import logging
 
 from topia.termextract import extract
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from bookie.lib.urlhash import generate_hash
 
 from datetime import datetime
@@ -19,7 +19,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Table
 from sqlalchemy import select
 from unidecode import unidecode
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import aliased
@@ -375,7 +375,7 @@ class Hashed(Base):
     def __init__(self, url):
         """We'll auto hash the id for them and set this up"""
         cleaned_url = str(unidecode(url))
-        self.hash_id = unicode(generate_hash(cleaned_url))
+        self.hash_id = str(generate_hash(cleaned_url))
         self.url = url
 
 
@@ -719,7 +719,7 @@ class Bmark(Base):
 
     def tag_string(self):
         """Generate a single spaced string of our tags"""
-        return u" ".join([tag for tag in self.tags.iterkeys()])
+        return u" ".join([tag for tag in self.tags])
 
     def update_tags(self, tag_string):
         """Given a tag string, split and update our tags to be these"""

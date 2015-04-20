@@ -24,7 +24,7 @@ class BookiePopularAPITest(unittest.TestCase):
 
     def setUp(self):
         from pyramid.paster import get_app
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()

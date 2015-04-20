@@ -20,7 +20,7 @@ if __name__ == "__main__":
                          'bookie.ini')
 
     ini.readfp(open(ini_path))
-    initialize_sql(dict(ini.items("app:bookie")))
+    initialize_sql(dict(ini.items("app:main")))
 
     from bookie.models import DBSession
     from bookie.models import Bmark, BmarkMgr

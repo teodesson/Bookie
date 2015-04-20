@@ -38,7 +38,7 @@ NON_ACTIVATION_AGE = timedelta(days=30)
 
 def get_random_word(wordLen):
     word = ''
-    for i in xrange(wordLen):
+    for i in range(wordLen):
         word += random.choice(('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
                                'tuvwxyz0123456789/&='))
     return word
@@ -375,5 +375,5 @@ class User(Base):
     def gen_api_key():
         """Generate a 12 char api key for the user to use"""
         m = hashlib.sha256()
-        m.update(get_random_word(12))
-        return unicode(m.hexdigest()[:12])
+        m.update(get_random_word(12).encode('utf-8'))
+        return str(m.hexdigest()[:12])

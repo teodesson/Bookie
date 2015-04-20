@@ -31,7 +31,7 @@ def random_string(length=None):
     """
     chars = string.ascii_uppercase + string.digits
     str_length = length if length is not None else random_int()
-    return unicode(u''.join(random.choice(chars) for x in range(str_length)))
+    return str(u''.join(random.choice(chars) for x in range(str_length)))
 
 
 def random_url():

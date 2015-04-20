@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser as ConfigParser
 import logging
 import os
 import random
@@ -27,6 +27,7 @@ from bookie.models.social import (
 from bookie.models.stats import StatBookmark
 from bookie.models.fulltext import _reset_index
 
+
 global_config = {}
 
 ini = ConfigParser.ConfigParser()
@@ -38,7 +39,7 @@ if not test_ini:
     test_ini = 'test.ini'
 
 ini.read(test_ini)
-settings = dict(ini.items('app:bookie'))
+settings = dict(ini.items('app:main'))
 from bookie.models import initialize_sql
 # Setup logging to read from the test ini file.
 fileConfig(test_ini)
@@ -48,7 +49,7 @@ LOG = logging.getLogger(__name__)
 transaction._transaction._LOGGER = LOG
 
 BOOKIE_TEST_INI = test_ini
-print "\nUSING TEST INI: ", BOOKIE_TEST_INI
+print("\nUSING TEST INI: ", BOOKIE_TEST_INI)
 
 # clean up whoosh index between test runs
 whoosh_idx = settings['fulltext.index']
@@ -88,7 +89,7 @@ class TestViewBase(unittest.TestCase):
         """Setup Tests"""
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.app = TestApp(app)
         self.config = testing.setUp()
@@ -117,6 +118,8 @@ class TestViewBase(unittest.TestCase):
 
 def empty_db():
     """On teardown, remove all the db stuff"""
+    DBSession.remove()
+    """    
     DBSession.execute(bmarks_tags.delete())
     Readable.query.delete()
     Bmark.query.delete()
@@ -137,6 +140,8 @@ def empty_db():
     AppLog.query.delete()
     DBSession.flush()
     transaction.commit()
-
+    """
+    
     # Clear the fulltext index as well.
     _reset_index()
+    

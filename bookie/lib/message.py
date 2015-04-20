@@ -86,7 +86,7 @@ class Message(object):
         is_live = True
 
         if not is_live:
-            print msg.as_string()
+            print(msg.as_string())
             return MSG_STATUS['sent']
         else:
             try:
