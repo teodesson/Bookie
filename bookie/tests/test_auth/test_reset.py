@@ -26,6 +26,8 @@ from unittest import TestCase
 from bookie.models import DBSession
 from bookie.models.auth import Activation
 
+# from bookie.tests import empty_db
+
 LOG = logging.getLogger(__name__)
 
 
@@ -41,7 +43,7 @@ class TestReactivateFunctional(TestCase):
     def setUp(self):
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -49,6 +51,7 @@ class TestReactivateFunctional(TestCase):
     def tearDown(self):
         self._reset_admin()
         testing.tearDown()
+        # empty_db()
 
     def test_activate_form_bad(self):
         """Test bad call to reset"""
@@ -56,7 +59,7 @@ class TestReactivateFunctional(TestCase):
             '/api/v1/suspend',
             content_type='application/json',
             status=406)
-        success = json.loads(res.body)['error']
+        success = json.loads(res.unicode_body)['error']
         self.assertTrue(
             success is not None,
             "Should not be successful with no email address: " + str(res))
@@ -64,7 +67,7 @@ class TestReactivateFunctional(TestCase):
         res = self.testapp.post('/api/v1/suspend',
                                 params={'email': 'notexist@gmail.com'},
                                 status=404)
-        success = json.loads(res.body)
+        success = json.loads(res.unicode_body)
         self.assertTrue(
             'error' in success,
             "Should not be successful with invalid email address: " + str(res))
@@ -82,7 +85,7 @@ class TestReactivateFunctional(TestCase):
                                 params={'email': u'testing@dummy.com'},
                                 status=200)
 
-        success = json.loads(res.body)
+        success = json.loads(res.unicode_body)
         self.assertTrue(
             'message' in success,
             "Should be successful with admin email address: " + str(res))
@@ -102,7 +105,7 @@ class TestReactivateFunctional(TestCase):
                                 status=200)
         self.assertTrue(mock_sendmail.called)
 
-        success = json.loads(res.body)
+        success = json.loads(res.unicode_body)
         self.assertTrue(
             'message' in success,
             "Should be successful with admin email address")
@@ -111,7 +114,7 @@ class TestReactivateFunctional(TestCase):
                                 params={'email': u'testing@dummy.com'},
                                 status=406)
 
-        success = json.loads(res.body)
+        success = json.loads(res.unicode_body)
         self.assertTrue(
             'error' in success,
             "Should not be successful on second try: " + str(res))
@@ -135,7 +138,7 @@ class TestReactivateFunctional(TestCase):
                                 status=200)
         self.assertTrue(mock_sendmail.called)
 
-        success = json.loads(res.body)
+        success = json.loads(res.unicode_body)
         self.assertTrue(
             'message' in success,
             "Should be successful with admin email address")

@@ -791,9 +791,12 @@ def suspend_acct(request):
     # we need to get the user from the email
     email = params.get('email', None)
 
-    if email is None and hasattr(request, 'json_body'):
-        # try the json body
-        email = request.json_body.get('email', None)
+    try:
+        if email is None and hasattr(request, 'json_body'):
+            # try the json body
+            email = request.json_body.get('email', None)
+    except ValueError:
+        email = None
 
     if user is None and email is None:
         request.response.status_int = 406
@@ -1155,10 +1158,10 @@ def new_user(request):
 
     u = User()
 
-    u.username = unicode(rdict.get('username'))
+    u.username = str(rdict.get('username'))
     if u.username:
         u.username = u.username.lower()
-    u.email = unicode(rdict.get('email')).lower()
+    u.email = str(rdict.get('email')).lower()
     passwd = get_random_word(8)
     u.password = passwd
     u.activated = True

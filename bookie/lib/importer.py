@@ -27,7 +27,7 @@ def store_import_file(storage_dir, username, files):
     # save the file off to the temp storage
     out_dir = "{storage_dir}/{randdir}".format(
         storage_dir=storage_dir,
-        randdir=random.choice(string.letters),
+        randdir=random.choice(string.ascii_letters),
     )
 
     # make sure the directory exists
@@ -38,7 +38,7 @@ def store_import_file(storage_dir, username, files):
     out_fname = "{0}/{1}.{2}".format(
         out_dir, username, files.filename)
     out = open(out_fname, 'w')
-    out.write(files.file.read())
+    out.write(str(files.file.read()))
     out.close()
 
     return out_fname
@@ -196,10 +196,10 @@ class DelImporter(Importer):
 
             try:
                 bmark = self.save_bookmark(
-                    unicode(link['href']),
-                    unicode(htmlParser.unescape(link.text)),
-                    unicode(extended),
-                    u" ".join(unicode(link.get('tags', '')).split(u',')),
+                    str(link['href']),
+                    str(htmlParser.unescape(link.text)),
+                    str(extended),
+                    u" ".join(str(link.get('tags', '')).split(u',')),
                     dt=add_date,
                     is_private=is_private)
                 count = count + 1
@@ -289,10 +289,10 @@ class DelXMLImporter(Importer):
 
             try:
                 bmark = self.save_bookmark(
-                    unicode(post.get('href')),
-                    unicode(post.get('description')),
-                    unicode(post.get('extended')),
-                    unicode(post.get('tag')),
+                    str(post.get('href')),
+                    str(post.get('description')),
+                    str(post.get('extended')),
+                    str(post.get('tag')),
                     dt=add_date,
                     is_private=is_private)
                 count = count + 1
@@ -431,9 +431,9 @@ class GBookmarkImporter(Importer):
         for url, metadata in urls.items():
             try:
                 bmark = self.save_bookmark(
-                    unicode(url),
-                    unicode(metadata['description']),
-                    unicode(metadata['extended']),
+                    str(url),
+                    str(metadata['description']),
+                    str(metadata['extended']),
                     u" ".join(metadata['tags']),
                     dt=metadata['date_added'])
                 DBSession.flush()
@@ -511,7 +511,7 @@ class FBookmarkImporter(Importer):
         if (self.file_handle.closed):
             self.file_handle = open(self.file_handle.name)
 
-        content = self.file_handle.read().decode("UTF-8")
+        content = self.file_handle.read()
         # HACK: Firefox' JSON writer leaves a trailing comma
         # HACK: at the end of the array, which no parser accepts
         if content.endswith(u"}]},]}"):
@@ -577,9 +577,9 @@ class FBookmarkImporter(Importer):
                 metadata['tags'] = ''
             try:
                 bookmark = self.save_bookmark(
-                    unicode(url),
-                    unicode(metadata['title']),
-                    unicode(metadata['annos'][0]['value']),
+                    str(url),
+                    str(metadata['title']),
+                    str(metadata['annos'][0]['value']),
                     u" ".join(metadata['tags']),
                     dt=datetime.fromtimestamp(
                         metadata['dateAdded']/1e6))

@@ -5,7 +5,6 @@ This model definition has been taken from a quickstarted TurboGears 2 project,
 but it's absolutely independent of TurboGears.
 
 """
-
 import bcrypt
 import hashlib
 import logging
@@ -287,7 +286,7 @@ class User(Base):
         """Hash password on the fly."""
         hashed_password = password
 
-        if isinstance(password, unicode):
+        if isinstance(password, str):
             password_8bit = password.encode('UTF-8')
         else:
             password_8bit = password
@@ -299,7 +298,7 @@ class User(Base):
         # Make sure the hased password is an UTF-8 object at the end of the
         # process because SQLAlchemy _wants_ a unicode object for Unicode
         # fields
-        if not isinstance(hashed_password, unicode):
+        if not isinstance(hashed_password, str):
             hashed_password = hashed_password.decode('UTF-8')
 
         self._password = hashed_password
@@ -335,7 +334,7 @@ class User(Base):
         """Return safe data to be sharing around"""
         hide = ['_password', 'password', 'is_admin', 'api_key']
         return dict(
-            [(k, v) for k, v in dict(self).iteritems() if k not in hide]
+            [(k, v) for k, v in list(dict(self).items()) if k not in hide]
         )
 
     def deactivate(self):

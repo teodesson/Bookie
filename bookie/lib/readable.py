@@ -117,7 +117,7 @@ class ReadUrl(object):
         """Fetch the given url and parse out a Readable Obj for the content"""
         read = Readable()
 
-        if not isinstance(url, unicode):
+        if not isinstance(url, str):
             url = url.decode('utf-8')
 
         # first check if we have a special url with the #! content in it
@@ -170,7 +170,7 @@ class ReadUrl(object):
             if exc.code not in [429]:
                 read.error(exc.code, HTTPH.responses[exc.code])
             else:
-                read.error(exc.code, unicode(exc.code) + ': ' + clean_url)
+                read.error(exc.code, str(exc.code) + ': ' + clean_url)
 
         except httplib.InvalidURL as exc:
             read.error(STATUS_CODES['901'], str(exc))

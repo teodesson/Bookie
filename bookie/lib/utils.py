@@ -44,6 +44,6 @@ def suggest_tags(data):
 
 def url_fix(url, charset='UTF-8'):
     """Normalize the URL if it contains Non-ASCII chars"""
-    if isinstance(url, unicode):
+    if isinstance(url, str):
         url = url.encode(charset)
     return quote(url, safe="%/:=&?~#+!$,;'@()*[]")

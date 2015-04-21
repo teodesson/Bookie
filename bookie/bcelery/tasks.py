@@ -263,7 +263,7 @@ def fulltext_index_bookmark(bid, content):
 
         try:
             writer.update_document(
-                bid=unicode(b.bid),
+                bid=str(b.bid),
                 description=b.description if b.description else u"",
                 extended=b.extended if b.extended else u"",
                 tags=b.tag_str if b.tag_str else u"",

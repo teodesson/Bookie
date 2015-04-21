@@ -95,7 +95,7 @@ class WhooshFulltext(object):
     def findByID(self, bid):
         """Find the item in the fulltext index by id"""
         with WIX.searcher() as search:
-            found = search.documents(bid=unicode(bid))
+            found = search.documents(bid=str(bid))
             res = [b for b in found]
         if res:
             return res[0]

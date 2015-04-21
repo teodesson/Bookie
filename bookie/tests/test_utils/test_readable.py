@@ -61,7 +61,7 @@ class TestReadable(TestCase):
         self.assertTrue(read.content is not None, "Content should not be none")
         self.assertTrue(
             'Bookie' in read.content,
-            u"The word Bookie is in the content: " + unicode(read.content))
+            u"The word Bookie is in the content: " + str(read.content))
 
     def test_non_net_url(self):
         """I might be bookmarking something internal bookie can't access"""
@@ -97,7 +97,7 @@ class TestReadable(TestCase):
             #                '8407'),
         }
 
-        for key, url in urls.iteritems():
+        for key, url in urls.items():
             read = ReadUrl.parse(url)
 
             self.assertTrue(
@@ -113,7 +113,7 @@ class TestReadableFulltext(TestCase):
         """Setup Tests"""
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -141,7 +141,7 @@ class TestReadableFulltext(TestCase):
             'content': 'bmark content is the best kind of content man',
         }
 
-        req_params = urllib.urlencode(prms)
+        req_params = urllib.parse.urlencode(prms)
         res = self.testapp.post('/api/v1/admin/bmark',
                                 params=req_params)
         session.flush()
@@ -163,8 +163,8 @@ class TestReadableFulltext(TestCase):
             search_res.status == '200 OK',
             "Status is 200: " + search_res.status)
         self.assertTrue(
-            'python' in search_res.body,
-            "We should find the python tag in the results: " + search_res.body)
+            'python' in search_res.unicode_body,
+            "We should find the python tag in the results: " + search_res.unicode_body)
 
     def test_fulltext_schema(self):
         """Verify the fulltext schema"""

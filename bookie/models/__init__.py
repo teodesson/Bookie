@@ -116,6 +116,11 @@ bmarks_tags = Table(
 
 class InvalidBookmark(Exception):
     """Exception class for erroring when a bookmark is not a valid one."""
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return "<InvalidBookmark(message={0})>".format(self.message)
 
 
 class TagMgr(object):

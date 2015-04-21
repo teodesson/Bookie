@@ -62,7 +62,7 @@ except:
 
 def gen_random_word(wordLen):
     word = u''
-    for i in xrange(wordLen):
+    for i in range(wordLen):
         word += random.choice((u'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
                                u'tuvwxyz0123456789/&='))
     return word
@@ -78,6 +78,7 @@ class TestDBBase(unittest.TestCase):
     def tearDown(self):
         """Tear down each test"""
         testing.tearDown()
+        empty_db()
         self.trans.abort()
 
 

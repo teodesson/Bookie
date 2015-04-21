@@ -244,9 +244,12 @@ class api_auth():
             username = request.params.get('username', username)
 
         def is_json_auth_request(request):
-            if hasattr(request, 'json_body'):
-                if self.api_field in request.json_body:
-                    return True
+            try:
+                if hasattr(request, 'json_body'):
+                    if self.api_field in request.json_body:
+                        return True
+            except ValueError:
+                return False
             return False
 
         if is_json_auth_request(request):

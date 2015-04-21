@@ -92,7 +92,7 @@ class BookiePopularAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        bmarks = json.loads(res.body)['bmarks']
+        bmarks = json.loads(res.unicode_body)['bmarks']
 
         self.assertEqual(
             len(bmarks),
@@ -139,7 +139,7 @@ class BookiePopularAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        bmarks = json.loads(res.body)['bmarks']
+        bmarks = json.loads(res.unicode_body)['bmarks']
 
         self.assertEqual(
             len(bmarks),

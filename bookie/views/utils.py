@@ -67,7 +67,7 @@ class ImportViews(BookieView):
 
                     # Mark the system that there's a pending import that needs
                     # to be completed
-                    q = ImportQueue(username, unicode(out_fname))
+                    q = ImportQueue(username, str(out_fname))
                     DBSession.add(q)
                     DBSession.flush()
                     # Schedule a task to start this import job.
