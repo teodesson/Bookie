@@ -15,6 +15,13 @@ requires = [
     'WebTest',
     'BeautifulSoup4',
     'pyramid_mako',
+	'decorator',
+	'topia.termextract',
+	'Unidecode',
+	'py-bcrypt',
+	'convoy',
+	'Whoosh',
+	'feedparser'
 ]
 
 
