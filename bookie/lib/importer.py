@@ -37,8 +37,8 @@ def store_import_file(storage_dir, username, files):
 
     out_fname = "{0}/{1}.{2}".format(
         out_dir, username, files.filename)
-    out = open(out_fname, 'w')
-    out.write(str(files.file.read()))
+    out = open(out_fname, 'wb')
+    out.write(files.file.read())
     out.close()
 
     return out_fname
@@ -75,11 +75,12 @@ class Importer(object):
     @staticmethod
     def can_handle(file_io):
         """This is meant to be implemented in subclasses"""
-        raise NotImplementedError("Please implement this in your importer")
+        raise NotImplementedError("Please implement can_handle in your importer")
 
     def process(self, fulltext=None):
         """Meant to be implemented in subclasses"""
-        raise NotImplementedError("Please implement this in your importer")
+        #raise NotImplementedError("Please implement process in your importer: " + str(type(self)))
+        pass
 
     def save_bookmark(self, url, desc, ext, tags, dt=None, is_private=False):
         """Save the bookmark to the db

@@ -1,0 +1,1 @@
+celery worker --app=bookie.bcelery -b redis://localhost:6379/3 -l debug
