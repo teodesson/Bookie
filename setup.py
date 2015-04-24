@@ -9,6 +9,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid',
+	'pyramid_tm',
     'SQLAlchemy',
     'transaction',
     'zope.sqlalchemy',
@@ -16,12 +17,19 @@ requires = [
     'BeautifulSoup4',
     'pyramid_mako',
 	'decorator',
+	'celery',
+	'python-dateutil',
 	'topia.termextract',
 	'Unidecode',
 	'py-bcrypt',
 	'convoy',
 	'Whoosh',
-	'feedparser'
+	'feedparser',
+	'tweepy',
+	'Whoosh',
+	'breadability',
+	'textblob',
+	'pymysql'
 ]
 
 
