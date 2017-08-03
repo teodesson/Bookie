@@ -8,13 +8,13 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid',
-    'SQLAlchemy',
+    'pyramid==1.5.8',
+    'SQLAlchemy==1.1.12',
     'transaction',
     'zope.sqlalchemy',
     'WebTest',
-    'BeautifulSoup4',
-    'pyramid_mako',
+    'BeautifulSoup4==4.6.0',
+    'pyramid-mako',
 ]
 
 

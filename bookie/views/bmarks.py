@@ -233,7 +233,7 @@ def edit_error(request):
                     DBSession.flush()
                     tasks.fetch_bmark_content.delay(bmark.bid)
 
-            except InvalidBookmark as exc:
+            except InvalidBookmark, exc:
                 # There was an issue using the supplied data to create a new
                 # bookmark. Send the data back to the user with the error
                 # message.

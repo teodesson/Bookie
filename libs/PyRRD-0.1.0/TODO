@@ -1,0 +1,40 @@
+==========
+Known Bugs
+==========
+
+* http://code.google.com/p/pyrrd/issues/list
+
+====
+TODO
+====
+
+Near Term
+---------
+
+* Move test code around (testing and admin/testRunner).
+
+* Fix breaking tests.
+
+* Add wiki examples for using info and fetch
+
+* Improve the wrapper for the Python RRDTool bindings
+
+  * a lot of the code in PyRRD was written quite a while ago (circa 2004), and
+    needs to be refactored (removing redundancies, use better idioms, etc.)
+
+* Allow for users to supply their own fd to pyrrd.graph.
+
+* Update all examples for recent dates like example4 has been updated.
+
+* Stop using actual file writes and doctests for file tests; use unit tests
+  (and StringIO) instead.
+
+Future
+------
+
+* Add an RPN class.
+
+* Add a DS collection class that has a get() method for getting a
+  particular DS by name.
+
+* Add support for atomic operations.

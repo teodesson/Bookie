@@ -180,7 +180,7 @@ def importer_process_worker(import_id):
             "IMPORT: COMPLETE for {username}".format(**dict(import_job)))
         trans.commit()
 
-    except Exception as exc:
+    except Exception, exc:
         # We need to log this and probably send an error email to the
         # admin
         from bookie.lib.message import ImportFailureMessage
@@ -273,7 +273,7 @@ def fulltext_index_bookmark(bid, content):
             )
             writer.commit()
             logger.debug('writer commit')
-        except (IndexingError, LockError) as exc:
+        except (IndexingError, LockError), exc:
             # There was an issue saving into the index.
             logger.error(exc)
             logger.warning('sending back to the queue')

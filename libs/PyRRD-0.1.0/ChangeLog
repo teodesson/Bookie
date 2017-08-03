@@ -1,0 +1,346 @@
+2009.12.19
+
+* Updated the mapper map function to check for the mode: in read mode, it sucks
+in XML data; in write mode, it uses what's already been written to the objects.
+This fixes issue #18.
+* Added support for catching command-line errors (Modified fix from Joseph
+Heck). This fixes issue #19.
+* Added missing exceptions module as well as backend tests.
+* Moved the error unit test into the external test case, where it belongs.
+* Removed redunant ElementTree import check, pulling instead from the util
+module.
+
+2009.12.18
+
+* Added a placeholder for native Python parsing of RRD file data.
+* Added a sandbox with some files for exploring Python-native RRD-read support.
+* Updated some doctests that were too sensive to version differences (point
+brought up by Joseph Heck).
+* Added more checks for existence in the doctests (Joseph Heck).
+* Updated acknowledgements.
+* Changed the DSs and RRAs in the mapper to extend, not append (Fix provided by
+Joseph Heck).
+* Updated the mappers to not use class attributes for lists (should fix issue
+#18, but that still needs to be tested).
+* Reverted the append->extend change.
+* Changed the way that the mappers stored their ds and rra data.
+* Added an XML dump file for testing.
+* Added unit tests for the XML dumps.
+* Enabled the RRA XML node to get the xff value by name.
+* Added unit tests for the RRD Mapper.
+* Moved the NaN class into the util module.
+* Moved a chunk of the logic from the external backend info function into the
+RRDMapper.printInfo method.
+
+2009.10.29
+
+* Added a first draft of a NaN fix for Windows users.
+* Applied partial patch from Denis Fortin (the part of the patch not included
+was a Linux-incompatible change for NaNs).
+* Changed a filename check in the doctest, due to the patch.
+* Fixed the doctests that were broken after the patch.
+* Updated pyrrd.testing.suite to do more widespread and intelligent optional
+test skipping.
+* Added an option parser to the test running so that users may not indicate
+verbosity level and skip files from the command line.
+* Added a base unittest test case.
+
+2009.10.27
+
+* Fixed failing epoch test.
+* Sync'ed Launchpad and Google repos.
+* Updated TODO.
+* Fixed buildParameters in backend.common.
+* Removed unused backend.external.buildParameters function.
+* Fixed parameters in external backend.
+* Fixed failing test in bindings backend.
+* Fixed graph formatting.
+* More external backend fixes.
+* Fixed unit tests in rrd module.
+* More unit test cleanups.
+* Added testing utilities.
+* Added new test runner that using the new testing module.
+* Removed old test runners.
+* Added unit tests for RRD isntantiation.
+* Tweaked test method names.
+
+2009.07.02
+
+* Added a test file for pushing up to launchpad.
+
+2009.07.01
+
+* Updated TODO.
+* Updated the admin defs to use the right google username.
+* Applied a fix for graphs on Windows machines (colons in filenames causing
+problems); patch supplied by Denis Fortin.
+* Applied a patch from Denis Fortin for letting Popen handle spaces in
+paramaters.
+* Applied a fix for an issue that Denis Fortin opened a ticket for regarding
+boolean flags not being handled properly.
+* Fixed the spelling on Denis' name!
+
+2009.03.30
+
+* Added update function to bindings wrapper.
+* Stubbed out fetch, dump, and load functions.
+* Added a graph function to the bindings wrapper.
+* Added dump and load functions to the bindings wrapper.
+* Added fetch wrapper for bindings.
+* Completely rearranged the info method/function/dispatch for symmetry between
+the two backends.
+* Added an info wrapper for bindings.
+* Finished touching up the bindings dispatcher.
+* Added doctests for bindings-enabled RRD to the bindings module.
+* Updated the README with a note about using the Graph class with the Python
+bindings.
+* Cleaned up an outdated docstring.
+Updated the "Features" and "Introduction" sections of the README.
+* Fixed typo in kwds dict (Mladen Milankovic).
+* Updated acknowledgements.
+
+2009.03.29
+
+* Created a branch for doing the python RRDtool bindings integration.
+* Added admin scripts for convenient branch management.
+* Updated TODO.
+* Added doctest for buildParameters.
+* Updated the RRD class to take a backend parameter in the constructor and
+modified the class to reference this assigned attribute in the rest of its
+methods.
+* Started putting together the bindings module.
+* Cleaned up the part of the README that has the new bindings instructions in
+it.
+* Updated the Graph class to take a backend parameter in its constructor.
+* Updated the README to include how to use graph.Graph with the python bindings
+backend.
+* Renamed backend.py to common.py for a container of backend functions that are
+common to both types.
+* Moved coerce and iterparse into common.
+* Cleaned up imports.
+* Fixed bindings.buildParameters and moved it into common.
+* Updated external.buildParameters to use the one from common.
+
+2009.03.26
+
+* Moved meta data out of setup.py and into pyrrd.meta.
+* Added docs directory and split docs out of README and added more info.
+* Moved pyrrd/utils.py to pyrrd/util/__init__.py.
+* Added pyrrd.util.dist.
+* Updated setup.py to use meta as well as the new dist utility.
+* Moved INSTALL content into README.
+* Moved acknowledgements out of README and into their own file.
+* Added file cleanups in doctests.
+* Updated MANIFEST to include new docs and removed references to files that no
+longer exist.
+* Tweaked setup.py and dist module.
+* Cleaned up parts of README that were causing problems in ReST rendering on
+PyPI.
+* Created an uploader for PyPI dists.
+
+2009.03.23
+
+* Added a file manifest so that files don't get left out during build process.
+* Updated setup.py.
+* Updated TODO.
+* Incremented microversion to 0.0.6 since this is a bug fix (manifest file).
+* Really incremented version.
+
+2009.03.21
+
+* Received the following fixes from Aaron Westendorf of Agora Games:
+  - Moved pyrrd.xml to pyrrd.__xml to not conflict with stdlib xml namespace.
+  - Fixed loading of existing RRDs when expected attributes are not there,
+    specifically when RRAs are for Holt-Winters.
+* Renamed __xml to node.
+* Updated unit tests.
+* Added missing docstrings.
+* Formatted contributed code.
+* Removed the Agora notes file
+* Updated version.
+* Added a dist-building script.
+* Updated the clean script.
+* Incremented microversion number to 0.0.5 (committed this change earlier).
+* Updated acknowledgements section in README.
+* Updated install instructions with a note about a conditional dependency.
+
+2009.01.31
+
+* Removed ez_setup dependence.
+* Fixed old parameter name in example.
+* Added shell script for testing example code.
+* Updated TODO.
+* Updated the RRD class so that manual calls to load are not necessary if an
+RRD instance is created with the mode="r" parameter.
+* Updated TODO.
+
+2009.01.30
+
+* Changed the rrd.* classes to inherit from the mapper.* classes.
+* Added last update tracking.
+* Updated RRD.load to use the mapper map method.
+* Cleaned up some variable names and comments.
+* Added missing mapper module.
+* Added printInfo method to the base mapper class.
+* Updated the RRD.info method to use the printInfo mapper method.
+* Added support for printing info of loaded RRD files.
+* Updated TODO.
+* Updated example4 to use current times instead of the times for when the
+examples were originally written (2005).
+* Added a string coercion before doing a split on dateOrData.
+* Removed old docstrings.
+* Improved getData mapper methods to descend into sub-objects.
+* Improved the output format of the external fetch function.
+* Fixed the external fetch and made the output format more usable.
+* Added support for a fetch method on the RRD class.
+
+2009.01.29
+
+* Updated the TODO with thoughts/plans for implementing an info method.
+* Started stubbing out the code that will support loading data from files (and
+thus an info method).
+* Added a reference directory with the dump dtd in it.
+* Added acknowledgements to README.
+* Removed the testing sandbox in trunk.
+* Renamed "read" to "load".
+* Added dump function with doctests.
+* Added working code and doctests for loading an RRD XML dump file as an
+ElementTree instance.
+* Added an XML module for extracting data from RRD dumps.
+* Removed stubbed mapper objects from rrd module.
+* Added mapper module for mapping ElementTree XML nodes to Python objects with
+attributes.
+* With the use of slots, removed __dict__ references.
+
+2009.01.28
+
+* Updated the old admin scripts to use bazaar.
+* Added more scripts, including definitions for pushing back up to Google Code
+(Subversion).
+* Added a fix for Windows users. Fixes: http://code.google.com/p/pyrrd/issues/detail?id=1
+* Cleaned up the backend module a tiny bit.
+* White space cleanup.
+* Added a fix for named parameters in the DataSource class. 
+  Fixes: http://code.google.com/p/pyrrd/issues/detail?id=2
+* Added Google Code to the admin push script.
+* Fixed missing named parameter in RRA class.
+* Fixed missing named parameter in RRD class.
+* Added a NotImplementedError for the fetch method.
+* Updated TODO.
+* Added missing named parameters in VariableDefinition class.
+* Added missing named parameters in CalculationDefinition class.
+* Updated test runner.
+* Updated README with links.
+* Updated commit script to run test runner.
+* Added project resource files (images).
+* Updated the TODO.
+* Fixed a typo.
+* Incremented micro version number.
+* Added placeholder for info implementation.
+* Updated formatting.
+
+2008.04.11
+
+* Moved sandbox.
+* Created admin directory.
+* Moved stat script into admin directory.
+* Added commit script.
+* Fixed date in ChangeLog.
+* Commented out sync code in commit.sh.
+* Renamed lib directory to pyrrd for easier use with non-installed
+environments.
+* Incremented micro version number.
+* Added test runner.
+* Fixed bad unit test result in pyrrd.utils.
+* Adjusted stat.sh script.
+* Updated setup.py.
+* Updated date in LICENSE.
+* Updated vars in example 1.
+* Fixed var names in rrd.external.
+* Renamed generateResultLines to iterParse and added some unit tests.
+* Cleaned up testmod call.
+* Cleaned up vars in rrd and graph modules.
+* Fixed example1 to accord with var name changes.
+* Fixed a missed var in rrd.DataSource, a test in graph, and updated example2.
+* Updated example3.
+* Updated example4.
+* Updated example5.
+* Updated TODO, based on email feedback from Markus Juenemann.
+
+2006.01.29
+
+* Added code to example5.py for generating RRD files and graphs from the
+sample data.
+* Updated the commends in example5.py and extended the 3-day archive to a
+7-day archive.
+* Corrected the vname in cdef1 of example5.py.
+
+2006.01.28
+
+* Added a couple doctests to the utils module.
+* Added template support to rrd.RRD.update().
+* Added a data file for the 5th example.
+* Extended the flexibility of rrd.RRD.bufferValue() such that it can now take
+a single parameter, and if so, that parameter will be considered a "data
+chunk", i.e., a group of one or more time:data strings.
+* Added missing step attribute in rrd.RRD.__init__().
+
+2006.01.24
+
+* Setup all graph.Graph parameters to be initialized.
+* Added code for graph.Print and graph.GraphPrint.
+* Added code for graph.Comment.
+* Added an examples directory.
+* Added code for graph.Line
+* Added code for graph.Area.
+* Finised graph.Graph.
+* Added graph.ColorAttributes class for easy OOP-configuration of a graph's
+overall color attributes.
+* As a first example, added the graph-generating code from the doctests.
+* Split the first example into two in order to show the color differences as a
+separate example.
+* Added a third example.
+* Updated rrd.RRD.bufferValue() to handle multiple values per line (for
+instances where more than one DS is getting updated in an RRD).
+* Added debug options to graph.Graph.write() and rrd.RRD.update().
+* Added a fourth example with a little more math for additional data sets.
+* Added INSTALL and README files.
+* Removed cruft from sandbox and removed "old" from lib.
+* Updated to newest ez_setup.py.
+
+2006.01.23
+
+* Added code for VDEF.
+* Added TODO.
+* Added code for CDEF.
+* Created external.py for using the command-line rrdtool binary.
+* Added create, update and fetch (with doctests) to external.py.
+* Moved old files into an 'old' dir.
+* Added graph (with doctests) to external.py.
+* Added a place-holder file for supporting the rrdtool python bindings.
+* Added a backends.py module for selecting which backend to use.
+* Added an rrd.py module for abstracting the database aspect of RRD.
+* Added a utils module with a funtion for getting the epoch date of a datetime
+object.
+* Finished most of rrd.py.
+* Added LICENSE, VERSION, setup.py and ez_setup.py.
+
+2006.01.22
+
+* Added old rrdtool sandbox code from CoyMon repository.
+* Added unfinished CoyMon rrd lib dir to PyRRD lib dir.
+* Added ChangeLog.
+* Added some basic library files with stubbs.
+* Added most of the class documentation for pyrrd.graph.* and the beginnings
+of some implementation.
+* Created graph.validateVName and graph.GraphDefinition, a.k.a. graph.DEF and
+added doctests to each.
+* Added escaping for colons in timedata.
+* Added checks for required attributes.
+
+[From the CoyMon ChangeLog]
+
+2004.11.01
+
+* Reorganized RRD libs in adytum.app.coymon.rrd.
+* Copied the RRD wrapper in my sandbox to adytum.app.coymon.rrd.graphs.

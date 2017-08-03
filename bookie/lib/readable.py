@@ -1,15 +1,15 @@
 """Handle processing and setting web content into Readability/cleaned
 
 """
-import http.client as httplib
+import httplib
 import logging
 import lxml
 import socket
-import urllib.request as urllib2
+import urllib2
 
-from http.server import BaseHTTPRequestHandler as HTTPH
+from BaseHTTPServer import BaseHTTPRequestHandler as HTTPH
 from breadability.readable import Article
-from urllib.parse import urlparse
+from urlparse import urlparse
 
 LOG = logging.getLogger(__name__)
 
@@ -165,23 +165,23 @@ class ReadUrl(object):
             read.headers = fh.info()
             read.content_type = read.headers.gettype()
 
-        except urllib2.HTTPError as exc:
+        except urllib2.HTTPError, exc:
             # for some reason getting a code 429 from a server
             if exc.code not in [429]:
                 read.error(exc.code, HTTPH.responses[exc.code])
             else:
                 read.error(exc.code, unicode(exc.code) + ': ' + clean_url)
 
-        except httplib.InvalidURL as exc:
+        except httplib.InvalidURL, exc:
             read.error(STATUS_CODES['901'], str(exc))
 
-        except urllib2.URLError as exc:
+        except urllib2.URLError, exc:
             read.error(STATUS_CODES['901'], str(exc))
 
-        except httplib.BadStatusLine as exc:
+        except httplib.BadStatusLine, exc:
             read.error(STATUS_CODES['905'], str(exc))
 
-        except socket.error as exc:
+        except socket.error, exc:
             read.error(STATUS_CODES['902'], str(exc))
 
         LOG.debug('is error?')
@@ -198,11 +198,11 @@ class ReadUrl(object):
                 else:
                     read.set_content(document.readable)
 
-            except socket.error as exc:
+            except socket.error, exc:
                 read.error(STATUS_CODES['902'], str(exc))
-            except httplib.IncompleteRead as exc:
+            except httplib.IncompleteRead, exc:
                 read.error(STATUS_CODES['903'], str(exc))
-            except lxml.etree.ParserError as exc:
+            except lxml.etree.ParserError, exc:
                 read.error(STATUS_CODES['904'], str(exc))
 
         return read

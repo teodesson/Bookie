@@ -1,0 +1,453 @@
+Metadata-Version: 1.0
+Name: PyRRD
+Version: 0.1.0
+Summary: An Object-Oriented Python Interface for RRDTool
+Home-page: http://code.google.com/p/pyrrd/
+Author: Duncan McGreggor
+Author-email: duncan@canonical.com
+License: BSD
+Description: ~~~~~
+        PyRRD
+        ~~~~~
+        
+        .. contents::
+           :depth: 1
+        
+        
+        ========
+        Features
+        ========
+        
+        PyRRD lets you use RRDTool from Python code that takes advantage of standard
+        object-oriented patterns. The makes the programmatic usage of RRDTool much
+        easier and reusable.
+        
+        A quick review of features is available at the project wiki [#]_ . Example
+        code with graph image output is also available on the wiki [#]_ .
+        
+        
+        ============
+        Introduction
+        ============
+        
+        PyRRD is an object-oriented wrapper for the command line graphing and
+        round-robin database utility, rrdtool [#]_ . PyRRD originally had two design
+        goals:
+        
+        1. provide an interface to rrdtool that Python programmers would love, and
+        
+        2. not depend upon the Python bindings for rrdtool.
+        
+        The reasons for the former are obvious. The motivation for the latter were the
+        many people who had difficulty compiling the rrdtool bindings on their
+        operating system of choice.
+        
+        Even though PyRRD's original purpose was to help those without the bingins, the
+        project now offers support for those with the bindings installed. As such,
+        users may enjoy both the speed benefits from the bindings as well as the API
+        usability from PyRRD.
+        
+        For docs, see the docstrings at the beginning of each class (and many of the
+        functions). They not only contain many of the standard RRDTool docs, but they
+        contain doctests which give you a hands-on, how-it-works understanding of
+        actual usage.
+        
+        For those curious about the motivation for creating PyRRD, perhaps some
+        background would be in order. Originally, there were only two ways to use
+        RRDTool from Python:
+        
+        1. using the Python bindings which were difficult to compile and use, or
+        
+        2. making system calls to the "rrdtool" executable from Python, passing
+        it all the parameters it needed.
+        
+        Option #1 was often difficult or impossible for many folks to get running on
+        their preferred operating system. But even if one was able to compile it and
+        run it, usage was very cumbersome and designed to work like the command line
+        tool and the C interface, not like most people typically use Python.
+        
+        Now, with PyRRD, there are two additional ways to use RRDTool from Python:
+        
+        3. an object-oriented interface that wraps system calls (Popen) to the
+        rrdtool binary, and
+        
+        4. the same object-oriented interface that wraps the cumbersome rrdtool
+        Python bindings.
+        
+        ============
+        Dependencies
+        ============
+        
+        Some parts of PyRRD make use of ElementTree for XML processing. If you have
+        Python 2.5 or greater, PyRRD will use xml.etree. If your Python version is less
+        than 2.5 and you want to use features that depend on XML processing (such as
+        dump function and the fetch/info methods), you will need to install
+        the ElementTree library [#]_ .
+        
+        
+        
+        ============
+        Installation
+        ============
+        
+        PyRRD is installed in the usual way::
+        
+          python setup.py install
+        
+        You may also use PyRRD without installing it as long as you have ./ in your
+        PYTHONPATH and you are in the top-level directory (which has the pyrrd child
+        directory).
+        
+        
+        =====
+        Usage
+        =====
+        
+        Create an RRD file programmatically::
+        
+            >>> from pyrrd.rrd import DataSource, RRA, RRD
+            >>> filename = '/tmp/test.rrd'
+            >>> dataSources = []
+            >>> roundRobinArchives = []
+            >>> dataSource = DataSource(
+            ...     dsName='speed', dsType='COUNTER', heartbeat=600)
+            >>> dataSources.append(dataSource)
+            >>> roundRobinArchives.append(RRA(cf='AVERAGE', xff=0.5, steps=1, rows=24))
+            >>> roundRobinArchives.append(RRA(cf='AVERAGE', xff=0.5, steps=6, rows=10))
+            >>> myRRD = RRD(
+            ...     filename, ds=dataSources, rra=roundRobinArchives, start=920804400)
+            >>> myRRD.create()
+        
+        Let's check to see that the file exists::
+        
+            >>> import os
+            >>> os.path.isfile(filename)
+            True
+        
+        Let's see how big it is (depending upon RRDTool version, the byte count can
+        change, so we'll just get a general sense)::
+        
+            >>> bytes = len(open(filename).read())
+            >>> 800 < bytes < 1200
+            True
+        
+        In order to save writes to disk, PyRRD buffers values and then writes the
+        values to the RRD file at one go::
+        
+            >>> myRRD.bufferValue('920805600', '12363')
+            >>> myRRD.bufferValue('920805900', '12363')
+            >>> myRRD.bufferValue('920806200', '12373')
+            >>> myRRD.bufferValue('920806500', '12383')
+            >>> myRRD.update()
+        
+        Let's add some more data::
+        
+            >>> myRRD.bufferValue('920806800', '12393')
+            >>> myRRD.bufferValue('920807100', '12399')
+            >>> myRRD.bufferValue('920807400', '12405')
+            >>> myRRD.bufferValue('920807700', '12411')
+            >>> myRRD.bufferValue('920808000', '12415')
+            >>> myRRD.bufferValue('920808300', '12420')
+            >>> myRRD.bufferValue('920808600', '12422')
+            >>> myRRD.bufferValue('920808900', '12423')
+            >>> myRRD.update()
+        
+        If you're curious, you can take a look at your rrd file with the following::
+        
+            myRRD.info()
+        
+        The output of that isn't printed here, 'cause it take up too much space.
+        However, it is very similar to the output of the similarly named rrdtool
+        command.
+        
+        In order to create a graph, we'll need some data definitions. We'll also
+        throw in some calculated definitions and variable definitions for good
+        meansure::
+        
+            >>> from pyrrd.graph import DEF, CDEF, VDEF, LINE, AREA, GPRINT
+            >>> def1 = DEF(rrdfile=myRRD.filename, vname='myspeed',
+            ...     dsName=dataSource.name)
+            >>> cdef1 = CDEF(vname='kmh', rpn='%s,3600,*' % def1.vname)
+            >>> cdef2 = CDEF(vname='fast', rpn='kmh,100,GT,kmh,0,IF')
+            >>> cdef3 = CDEF(vname='good', rpn='kmh,100,GT,0,kmh,IF')
+            >>> vdef1 = VDEF(vname='mymax', rpn='%s,MAXIMUM' % def1.vname)
+            >>> vdef2 = VDEF(vname='myavg', rpn='%s,AVERAGE' % def1.vname)
+        
+            >>> line1 = LINE(value=100, color='#990000', legend='Maximum Allowed')
+            >>> area1 = AREA(defObj=cdef3, color='#006600', legend='Good Speed')
+            >>> area2 = AREA(defObj=cdef2, color='#CC6633', legend='Too Fast')
+            >>> line2 = LINE(defObj=vdef2, color='#000099', legend='My Average',
+            ...     stack=True)
+            >>> gprint1 = GPRINT(vdef2, '%6.2lf kph')
+        
+        Color is the spice of life. Let's spice it up a little::
+        
+            >>> from pyrrd.graph import ColorAttributes
+            >>> ca = ColorAttributes()
+            >>> ca.back = '#333333'
+            >>> ca.canvas = '#333333'
+            >>> ca.shadea = '#000000'
+            >>> ca.shadeb = '#111111'
+            >>> ca.mgrid = '#CCCCCC'
+            >>> ca.axis = '#FFFFFF'
+            >>> ca.frame = '#AAAAAA'
+            >>> ca.font = '#FFFFFF'
+            >>> ca.arrow = '#FFFFFF'
+        
+        Now we can create a graph for the data in our RRD file::
+        
+            >>> from pyrrd.graph import Graph
+            >>> graphfile = "/tmp/rrdgraph.png"
+            >>> g = Graph(graphfile, start=920805000, end=920810000,
+            ...     vertical_label='km/h', color=ca)
+            >>> g.data.extend([def1, cdef1, cdef2, cdef3, vdef1, vdef2, line1, area1,
+            ...     area2, line2, gprint1])
+            >>> g.write()
+        
+        Let's make sure it's there::
+        
+            >>> os.path.isfile(graphfile)
+            True
+        
+        Let's get a sense of the byte size::
+        
+            >>> bytes = len(open(graphfile).read())
+            >>> bytes != 0
+            True
+            >>> 8000 < bytes < 10400
+            True
+        
+        Open that up in your favorite image browser and confirm that the appropriate
+        RRD graph is generated.
+        
+        Let's clean up the files we've put in the temp directory::
+        
+            >>> os.unlink(filename)
+            >>> os.unlink(graphfile)
+        
+        
+        ===============
+        Python Bindings
+        ===============
+        
+        In addition to the command line tool, PyRRD also supports using the Python
+        bindings, if you have them installed. Let's set some stuff up like we did in
+        the previous example::
+        
+            >>> filename = '/tmp/test.rrd'
+            >>> dataSources = []
+            >>> roundRobinArchives = []
+            >>> dataSource = DataSource(
+            ...     dsName='speed', dsType='COUNTER', heartbeat=600)
+            >>> dataSources.append(dataSource)
+            >>> roundRobinArchives.append(RRA(cf='AVERAGE', xff=0.5, steps=1, rows=24))
+            >>> roundRobinArchives.append(RRA(cf='AVERAGE', xff=0.5, steps=6, rows=10))
+        
+        Usage is identical to the standard PyRRD usage, with the exception of object
+        construction::
+        
+            >>> from pyrrd.backend import bindings
+            >>> myRRD = RRD(filename, ds=dataSources, rra=roundRobinArchives,
+            ...     backend=bindings)
+            >>> myRRD.create()
+        
+        Note that since the Graph module is its own beast, you will need to indicate
+        whether you want to use the bindings or the external backend when you graph as
+        well::
+        
+            >>> from pyrrd.graph import Graph
+            >>> graphfile = "/tmp/rrdgraph.png"
+            >>> g = Graph(graphfile, start=920805000, end=920810000,
+            ...     vertical_label='km/h', color=ca, backend=bindings)
+            >>> g.data.extend([def1, cdef1, cdef2, cdef3, vdef1, vdef2, line1, area1,
+            ...     area2, line2, gprint1])
+            >>> g.write()
+        
+        Everything else is the same. Let's check to see that the file exists, and then
+        we'll cleanup::
+        
+            >>> import os
+            >>> os.path.isfile(filename)
+            True
+            >>> os.unlink(filename)
+        
+        
+        ==========
+        Known Bugs
+        ==========
+        
+        * http://code.google.com/p/pyrrd/issues/list
+        
+        ====
+        TODO
+        ====
+        
+        Near Term
+        ---------
+        
+        * Move test code around (testing and admin/testRunner).
+        
+        * Fix breaking tests.
+        
+        * Add wiki examples for using info and fetch
+        
+        * Improve the wrapper for the Python RRDTool bindings
+        
+          * a lot of the code in PyRRD was written quite a while ago (circa 2004), and
+            needs to be refactored (removing redundancies, use better idioms, etc.)
+        
+        * Allow for users to supply their own fd to pyrrd.graph.
+        
+        * Update all examples for recent dates like example4 has been updated.
+        
+        * Stop using actual file writes and doctests for file tests; use unit tests
+          (and StringIO) instead.
+        
+        Future
+        ------
+        
+        * Add an RPN class.
+        
+        * Add a DS collection class that has a get() method for getting a
+          particular DS by name.
+        
+        * Add support for atomic operations.
+        
+        
+        =======
+        Changes
+        =======
+        
+        From 0.0.7 to 0.1.0
+        -------------------
+        
+        This version marks a significant update to the code base. Some 70+ commits have
+        been made to trunk since the last release in the period from March 2009 to
+        September 2011. Some of the most signficant changes include the following:
+        
+        * Added a wrapper for the Python bindings.
+        
+        * Improvements in tests and testing infrastructure.
+        
+        * Improved exception handling.
+        
+        * Many changes and improvements to the RRD -> Python object mapper.
+        
+        * Improved support in Windows.
+        
+        * Graph formatting fixes.
+        
+        * Many bug fixes from community members.
+        
+        
+        From 0.0.6 to 0.0.7
+        -------------------
+        
+        * Packaging improvements and loads of documentation.
+        
+        
+        From 0.0.5 to 0.0.6
+        -------------------
+        
+        * Bug fix release (missing files in source package).
+        
+        
+        From 0.0.4 to 0.0.5
+        -------------------
+        
+        * Added support for retrieving and displaying RRD from RRD files.
+        
+        * Added an object mapper for RRD data (via XML files).
+        
+        * Added community-contributed improvements.
+        
+        
+        From 0.0.3 to 0.0.4
+        -------------------
+        
+        * Updated all the examples to work with the latest code.
+        
+        * Added community-contributed bug fix for Windows users.
+        
+        
+        From 0.0.2 to 0.0.3
+        -------------------
+        
+        * Minor code reorg.
+        
+        * Fixed doctests.
+        
+        * Various bug fixes.
+        
+        * Examples updates.
+        
+        
+        From 0.0.1 to 0.0.2
+        -------------------
+        
+        * Added license.
+        
+        * Added unit tests.
+        
+        * Added more examples.
+        
+        
+        From 0 to 0.0.1
+        ---------------
+        
+        * Reorganized RRD code as donated from the CoyMon project.
+        
+        * Got basic rrdtool functionality represented as Python classes.
+        
+        * Code cleanup.
+        
+        
+        ================
+        Acknowledgements
+        ================
+        
+        The following members of the community have provided valuable contributions to
+        this project:
+        
+        * Ravi Bhalotia, Allen Lerner, Mike Carrick and the U.S. Department of Veterans
+          Affairs
+        
+        * AdytumSolutions, Inc., E-Secure Systems
+        
+        * nasvos, Leem Smit, Aaron Westendorf and Agora Games
+        
+        * Mladen Milankovic, Denis Fortin
+        
+        * Joseph Heck, Jean-Baptiste Quenot
+        
+        * Pavel Shramov, Brad Beattie, Colin Horsington
+        
+        Thanks!
+        
+        
+        ==========
+        References
+        ==========
+        
+        .. [#] http://code.google.com/p/pyrrd/wiki/FrontPage?tm=6
+        
+        .. [#] http://code.google.com/p/pyrrd/wiki/FullWorkingExamples
+        
+        .. [#] http://oss.oetiker.ch/rrdtool/
+        
+        .. [#] http://effbot.org/zone/element-index.htm
+        
+        
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: Programming Language :: Python
+Classifier: Topic :: Database
+Classifier: Topic :: Database :: Front-Ends
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: System :: Networking :: Monitoring
+Classifier: Topic :: System :: Systems Administration
+Classifier: License :: OSI Approved :: BSD License

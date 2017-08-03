@@ -375,7 +375,7 @@ class Hashed(Base):
     def __init__(self, url):
         """We'll auto hash the id for them and set this up"""
         cleaned_url = str(unidecode(url))
-        self.hash_id = str(generate_hash(cleaned_url))
+        self.hash_id = unicode(generate_hash(cleaned_url))
         self.url = url
 
 
@@ -719,7 +719,7 @@ class Bmark(Base):
 
     def tag_string(self):
         """Generate a single spaced string of our tags"""
-        return u" ".join([tag for tag in self.tags])
+        return u" ".join([tag for tag in self.tags.iterkeys()])
 
     def update_tags(self, tag_string):
         """Given a tag string, split and update our tags to be these"""

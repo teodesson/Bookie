@@ -1,0 +1,8 @@
+recursive-include pyrrd *.py
+recursive-include examples *.py *.png
+recursive-include docs *.txt
+include ChangeLog
+include README
+include LICENSE
+include TODO
+

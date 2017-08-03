@@ -51,6 +51,3 @@ def main(global_config, **settings):
     config.scan('bookie.views')
 
     return config.make_wsgi_app()
- 
- 
-
