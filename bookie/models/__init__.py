@@ -719,7 +719,7 @@ class Bmark(Base):
 
     def tag_string(self):
         """Generate a single spaced string of our tags"""
-        return u" ".join([tag for tag in self.tags.iterkeys()])
+        return u" ".join([tag for tag in self.tags])
 
     def update_tags(self, tag_string):
         """Given a tag string, split and update our tags to be these"""

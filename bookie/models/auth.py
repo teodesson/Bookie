@@ -38,7 +38,7 @@ NON_ACTIVATION_AGE = timedelta(days=30)
 
 def get_random_word(wordLen):
     word = ''
-    for i in xrange(wordLen):
+    for i in range(wordLen):
         word += random.choice(('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
                                'tuvwxyz0123456789/&='))
     return word
@@ -287,7 +287,7 @@ class User(Base):
         """Hash password on the fly."""
         hashed_password = password
 
-        if isinstance(password, unicode):
+        if isinstance(password, str):
             password_8bit = password.encode('UTF-8')
         else:
             password_8bit = password
@@ -299,7 +299,7 @@ class User(Base):
         # Make sure the hased password is an UTF-8 object at the end of the
         # process because SQLAlchemy _wants_ a unicode object for Unicode
         # fields
-        if not isinstance(hashed_password, unicode):
+        if not isinstance(hashed_password, str):
             hashed_password = hashed_password.decode('UTF-8')
 
         self._password = hashed_password
@@ -367,7 +367,7 @@ class User(Base):
             new_user = UserMgr.signup_user(email, self.username)
 
             # decrement the invite counter
-            self.invite_ct = self.invite_ct - 1
+            self.invite_ct -= 1
             DBSession.add(new_user)
             return new_user
 
@@ -375,5 +375,6 @@ class User(Base):
     def gen_api_key():
         """Generate a 12 char api key for the user to use"""
         m = hashlib.sha256()
-        m.update(get_random_word(12))
-        return unicode(m.hexdigest()[:12])
+        rnd = get_random_word(12)
+        m.update(rnd.encode('utf-8'))
+        return str(m.hexdigest()[:12])

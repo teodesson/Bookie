@@ -121,7 +121,7 @@ class LogRecord(object):
 
         # we need to hash down the payload if there is one
         if 'payload' in kwargs and kwargs['payload'] is not None:
-            kwargs['payload'] = unicode(
+            kwargs['payload'] = str(
                 json.dumps(dict(kwargs.get('payload')))
             )
 
