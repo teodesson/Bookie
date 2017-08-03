@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from celery import Celery
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from datetime import timedelta
 from os import environ
 from os import path
@@ -25,7 +25,7 @@ def load_ini():
     cfg.readfp(open(ini_path))
 
     # Hold onto the ini config.
-    return dict(cfg.items('app:bookie', raw=True))
+    return dict(cfg.items('app:main', raw=True))
 
 
 INI = load_ini()

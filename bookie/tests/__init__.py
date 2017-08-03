@@ -38,7 +38,7 @@ if not test_ini:
     test_ini = 'test.ini'
 
 ini.read(test_ini)
-settings = dict(ini.items('app:bookie'))
+settings = dict(ini.items('app:main'))
 from bookie.models import initialize_sql
 # Setup logging to read from the test ini file.
 fileConfig(test_ini)
@@ -48,7 +48,7 @@ LOG = logging.getLogger(__name__)
 transaction._transaction._LOGGER = LOG
 
 BOOKIE_TEST_INI = test_ini
-print "\nUSING TEST INI: ", BOOKIE_TEST_INI
+print("\nUSING TEST INI: ", BOOKIE_TEST_INI)
 
 # clean up whoosh index between test runs
 whoosh_idx = settings['fulltext.index']
@@ -61,7 +61,7 @@ except:
 
 def gen_random_word(wordLen):
     word = u''
-    for i in xrange(wordLen):
+    for i in range(wordLen):
         word += random.choice((u'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
                                u'tuvwxyz0123456789/&='))
     return word

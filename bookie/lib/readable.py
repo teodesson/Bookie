@@ -1,15 +1,15 @@
 """Handle processing and setting web content into Readability/cleaned
 
 """
-import httplib
 import logging
 import lxml
 import socket
-import urllib2
 
-from BaseHTTPServer import BaseHTTPRequestHandler as HTTPH
+from http.client import InvalidURL, BadStatusLine, IncompleteRead
+from http.server import BaseHTTPRequestHandler as HTTPH
 from breadability.readable import Article
-from urlparse import urlparse
+from urllib.parse import urlparse
+from urllib.request import Request, HTTPError, URLError, build_opener
 
 LOG = logging.getLogger(__name__)
 
@@ -117,7 +117,7 @@ class ReadUrl(object):
         """Fetch the given url and parse out a Readable Obj for the content"""
         read = Readable()
 
-        if not isinstance(url, unicode):
+        if not isinstance(url, str):
             url = url.decode('utf-8')
 
         # first check if we have a special url with the #! content in it
@@ -154,9 +154,9 @@ class ReadUrl(object):
 
         try:
             LOG.debug('Readable Parsed: ' + clean_url)
-            request = urllib2.Request(clean_url.encode('utf-8'))
+            request = Request(clean_url.encode('utf-8'))
             request.add_header('User-Agent', USER_AGENT)
-            opener = urllib2.build_opener()
+            opener = build_opener()
             fh = opener.open(request)
 
             # if it works, then we default to a 200 request
@@ -165,23 +165,23 @@ class ReadUrl(object):
             read.headers = fh.info()
             read.content_type = read.headers.gettype()
 
-        except urllib2.HTTPError, exc:
+        except HTTPError as exc:
             # for some reason getting a code 429 from a server
             if exc.code not in [429]:
                 read.error(exc.code, HTTPH.responses[exc.code])
             else:
-                read.error(exc.code, unicode(exc.code) + ': ' + clean_url)
+                read.error(exc.code, str(exc.code) + ': ' + clean_url)
 
-        except httplib.InvalidURL, exc:
+        except InvalidURL as exc:
             read.error(STATUS_CODES['901'], str(exc))
 
-        except urllib2.URLError, exc:
+        except URLError as exc:
             read.error(STATUS_CODES['901'], str(exc))
 
-        except httplib.BadStatusLine, exc:
+        except BadStatusLine as exc:
             read.error(STATUS_CODES['905'], str(exc))
 
-        except socket.error, exc:
+        except socket.error as exc:
             read.error(STATUS_CODES['902'], str(exc))
 
         LOG.debug('is error?')
@@ -198,11 +198,11 @@ class ReadUrl(object):
                 else:
                     read.set_content(document.readable)
 
-            except socket.error, exc:
+            except socket.error as exc:
                 read.error(STATUS_CODES['902'], str(exc))
-            except httplib.IncompleteRead, exc:
+            except IncompleteRead as exc:
                 read.error(STATUS_CODES['903'], str(exc))
-            except lxml.etree.ParserError, exc:
+            except lxml.etree.ParserError as exc:
                 read.error(STATUS_CODES['904'], str(exc))
 
         return read
