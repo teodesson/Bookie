@@ -6,7 +6,6 @@ from mock import patch
 from pyramid import testing
 from unittest import TestCase
 
-from bookie.tests import empty_db
 
 class TestSearchAttr(TestCase):
 
@@ -23,14 +22,13 @@ class TestSearchAttr(TestCase):
     def setUp(self):
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'main')
+        app = get_app(BOOKIE_TEST_INI, 'bookie')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
 
     def tearDown(self):
         testing.tearDown()
-        empty_db()
 
     @patch('bookie.models.fulltext.WhooshFulltext')
     def test_search_content(self, mock_search):

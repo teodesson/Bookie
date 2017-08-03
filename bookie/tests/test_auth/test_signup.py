@@ -2,7 +2,7 @@
 
 """
 import logging
-from urllib.parse import (
+from urllib import (
     quote,
     urlencode,
 )
@@ -16,7 +16,7 @@ from bookie.models.auth import UserMgr
 from bookie.tests import gen_random_word
 from bookie.tests import TestDBBase
 from bookie.tests import TestViewBase
-from bookie.tests import empty_db
+
 
 LOG = logging.getLogger(__name__)
 
@@ -35,10 +35,10 @@ class TestInviteSetup(TestDBBase):
     def testInviteCreatesUser(self):
         """We should get a new user when inviting something"""
         me = User()
-        me.username = 'me'
-        me.email = 'me.com'
+        me.username = u'me'
+        me.email = u'me.com'
         me.invite_ct = 2
-        you = me.invite('you.com')
+        you = me.invite(u'you.com')
 
         self.assertEqual(
             'you.com',
@@ -87,20 +87,19 @@ class TestOpenSignup(TestViewBase):
 
     def tearDown(self):
         super(TestOpenSignup, self).tearDown()
-        User.query.filter(User.email == 'testing@newuser.com').delete()
-        empty_db()
+        User.query.filter(User.email == u'testing@newuser.com').delete()
 
     def testSignupRenders(self):
         """A signup form is kind of required."""
         res = self.app.get('/signup')
 
-        self.assertIn('Sign up for Bookie', res.unicode_body)
-        self.assertNotIn('class="error"', res.unicode_body)
+        self.assertIn('Sign up for Bookie', res.body)
+        self.assertNotIn('class="error"', res.body)
 
     def testEmailRequired(self):
         """Signup requires an email entry."""
         res = self.app.post('/signup_process')
-        self.assertIn('Please supply', res.unicode_body)
+        self.assertIn('Please supply', res.body)
 
     def testEmailAlreadyThere(self):
         """Signup requires an email entry."""
@@ -110,7 +109,7 @@ class TestOpenSignup(TestViewBase):
                 'email': 'testing@dummy.com'
             }
         )
-        self.assertIn('already signed up', res.unicode_body)
+        self.assertIn('already signed up', res.body)
 
     def testEmailIsLowercase(self):
         """Signup saves email as all lowercase"""
@@ -120,12 +119,12 @@ class TestOpenSignup(TestViewBase):
                 'email': 'CAPITALTesting@Dummy.cOm'
             }
         )
-        self.assertIn('capitaltesting@dummy.com', res.unicode_body)
+        self.assertIn('capitaltesting@dummy.com', res.body)
 
     def testUsernameAlreadyThere(self):
         """Signup requires an unique username entry."""
         email = 'testing@gmail.com'
-        new_user = UserMgr.signup_user(email, 'invite')
+        new_user = UserMgr.signup_user(email, u'invite')
         DBSession.add(new_user)
 
         transaction.commit()
@@ -140,17 +139,17 @@ class TestOpenSignup(TestViewBase):
         res = self.app.post(
             url,
             params={
-                'password': 'testing',
+                'password': u'testing',
                 'username': user.username,
                 'code': user.activation.code,
-                'new_username': 'admin',
+                'new_username': u'admin',
             })
-        self.assertIn('Username already', res.unicode_body)
+        self.assertIn('Username already', res.body)
 
     def testResetFormDisplay(self):
         """Make sure you can GET the reset form."""
         email = 'testing@gmail.com'
-        new_user = UserMgr.signup_user(email, 'invite')
+        new_user = UserMgr.signup_user(email, u'invite')
         DBSession.add(new_user)
 
         transaction.commit()
@@ -163,12 +162,12 @@ class TestOpenSignup(TestViewBase):
         ))
 
         res = self.app.get(url)
-        self.assertIn('Activate', res.unicode_body)
+        self.assertIn('Activate', res.body)
 
     def testUsernameIsLowercase(self):
         """Signup saves username as all lowercase"""
         email = 'TestingUsername@test.com'
-        new_user = UserMgr.signup_user(email, 'testcase')
+        new_user = UserMgr.signup_user(email, u'testcase')
         DBSession.add(new_user)
 
         transaction.commit()
@@ -177,7 +176,7 @@ class TestOpenSignup(TestViewBase):
             User.username == email.lower()).one()
 
         params = {
-            'password': 'testing',
+            'password': u'testing',
             'username': user.username,
             'code': user.activation.code,
             'new_username': 'TESTLowercase'
@@ -193,8 +192,8 @@ class TestOpenSignup(TestViewBase):
 
     def testSignupWorks(self):
         """Signing up stores an activation."""
-        email = 'testing@newuser.com'
-        UserMgr.signup_user(email, 'testcase')
+        email = u'testing@newuser.com'
+        UserMgr.signup_user(email, u'testcase')
 
         activations = Activation.query.all()
 

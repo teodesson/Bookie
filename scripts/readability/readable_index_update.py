@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
         if b:
             writer.update_document(
-                bid=str(b.bid),
+                bid=unicode(b.bid),
                 description=b.description if b.description else u"",
                 extended=b.extended if b.extended else u"",
                 tags=b.tag_str if b.tag_str else u"",

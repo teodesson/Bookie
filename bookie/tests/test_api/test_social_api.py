@@ -20,7 +20,7 @@ class TestSocialConnectionsApi(TestViewBase):
         res = self.app.get('/api/v1/admin/social_connections',
                            params=params,
                            status=200)
-        connections = json.loads(res.unicode_body)
+        connections = json.loads(res.body)
         self.assertEqual('admin',
                          connections['social_connections'][0]['username'],
                          'Username should be admin')

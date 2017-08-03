@@ -30,7 +30,7 @@ class TestTagCommander(TestCase):
     def setUp(self):
         """Store off the commands so we can return them"""
         self.saved_commandlist = COMMANDLIST
-        for key in list(COMMANDLIST):
+        for key in COMMANDLIST.keys():
             del(COMMANDLIST[key])
         DBSession.execute("INSERT INTO tags (name) VALUES ('toread')")
 
@@ -74,7 +74,7 @@ class TestToRead(TestCase):
     def setUp(self):
         """Store off the commands so we can return them"""
         self.saved_commandlist = COMMANDLIST
-        for key in list(COMMANDLIST):
+        for key in COMMANDLIST.keys():
             del(COMMANDLIST[key])
         DBSession.execute("INSERT INTO tags (name) VALUES ('toread')")
 
@@ -115,7 +115,7 @@ class TestIsRead(TestCase):
     def setUp(self):
         """Store off the commands so we can return them"""
         self.saved_commandlist = COMMANDLIST
-        for key in list(COMMANDLIST):
+        for key in COMMANDLIST.keys():
             del(COMMANDLIST[key])
 
     def tearDown(self):

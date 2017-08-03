@@ -1,4 +1,4 @@
-import configparser as ConfigParser
+import ConfigParser
 import logging
 import os
 import random
@@ -27,7 +27,6 @@ from bookie.models.social import (
 from bookie.models.stats import StatBookmark
 from bookie.models.fulltext import _reset_index
 
-
 global_config = {}
 
 ini = ConfigParser.ConfigParser()
@@ -39,7 +38,7 @@ if not test_ini:
     test_ini = 'test.ini'
 
 ini.read(test_ini)
-settings = dict(ini.items('app:main'))
+settings = dict(ini.items('app:bookie'))
 from bookie.models import initialize_sql
 # Setup logging to read from the test ini file.
 fileConfig(test_ini)
@@ -49,7 +48,7 @@ LOG = logging.getLogger(__name__)
 transaction._transaction._LOGGER = LOG
 
 BOOKIE_TEST_INI = test_ini
-print("\nUSING TEST INI: ", BOOKIE_TEST_INI)
+print "\nUSING TEST INI: ", BOOKIE_TEST_INI
 
 # clean up whoosh index between test runs
 whoosh_idx = settings['fulltext.index']
@@ -62,7 +61,7 @@ except:
 
 def gen_random_word(wordLen):
     word = u''
-    for i in range(wordLen):
+    for i in xrange(wordLen):
         word += random.choice((u'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
                                u'tuvwxyz0123456789/&='))
     return word
@@ -78,7 +77,6 @@ class TestDBBase(unittest.TestCase):
     def tearDown(self):
         """Tear down each test"""
         testing.tearDown()
-        empty_db()
         self.trans.abort()
 
 
@@ -90,7 +88,7 @@ class TestViewBase(unittest.TestCase):
         """Setup Tests"""
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'main')
+        app = get_app(BOOKIE_TEST_INI, 'bookie')
         from webtest import TestApp
         self.app = TestApp(app)
         self.config = testing.setUp()
@@ -119,8 +117,6 @@ class TestViewBase(unittest.TestCase):
 
 def empty_db():
     """On teardown, remove all the db stuff"""
-    DBSession.remove()
-    """    
     DBSession.execute(bmarks_tags.delete())
     Readable.query.delete()
     Bmark.query.delete()
@@ -141,8 +137,6 @@ def empty_db():
     AppLog.query.delete()
     DBSession.flush()
     transaction.commit()
-    """
-    
+
     # Clear the fulltext index as well.
     _reset_index()
-    

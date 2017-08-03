@@ -1,7 +1,7 @@
 """Test that we're meeting delicious API specifications"""
 import logging
 import os
-from io import StringIO
+import StringIO
 import transaction
 import unittest
 
@@ -48,9 +48,9 @@ class TestImports(unittest.TestCase):
             "We should have 1 private bookmark: " + str(len(private_res)))
 
         # verify we can find a bookmark by url and check tags, etc
-        check_url = 'http://www.ndftz.com/nickelanddime.png'
-        url_description = 'nickelanddime.png (PNG Image, 1200x1400 pixels)' \
-                          ' - Scaled (64%) - "Test"'
+        check_url = u'http://www.ndftz.com/nickelanddime.png'
+        url_description = u'nickelanddime.png (PNG Image, 1200x1400 pixels)' \
+                          u' - Scaled (64%) - "Test"'
         check_url_hashed = generate_hash(check_url)
         found = Bmark.query.filter(Bmark.hash_id == check_url_hashed).one()
 
@@ -128,7 +128,7 @@ class TestImports(unittest.TestCase):
         # verify we can find a bookmark by url and check tags, etc
         check_url = 'http://www.alistapart.com/'
         check_url_hashed = generate_hash(check_url)
-        url_description = 'A List Apart "Test"'
+        url_description = u'A List Apart "Test"'
         found = Bmark.query.filter(Bmark.hash_id == check_url_hashed).one()
 
         self.assertTrue(
@@ -224,7 +224,7 @@ class ImporterBaseTest(TestImports):
 
     def test_doesnt_implement_process(self):
         """Verify we get the exception expected when running process"""
-        some_io = StringIO()
+        some_io = StringIO.StringIO()
         imp = Importer(some_io)
         self.assertRaises(NotImplementedError, imp.process)
 
@@ -283,7 +283,7 @@ class ImportDeliciousTest(TestImports):
 
     def test_is_not_delicious_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO()
+        bad_file = StringIO.StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -339,7 +339,7 @@ class ImportDeliciousXMLTest(TestImports):
 
     def test_is_not_delicious_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO()
+        bad_file = StringIO.StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -398,7 +398,7 @@ class ImportGoogleTest(TestImports):
 
     def test_is_not_google_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO()
+        bad_file = StringIO.StringIO()
         bad_file.write('failing tests please')
 
     def test_import_process(self):
@@ -448,7 +448,7 @@ class ImportChromeTest(TestImports):
 
     def test_is_not_google_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO()
+        bad_file = StringIO.StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -461,7 +461,7 @@ class ImportChromeTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct google bookmarks"""
         good_file = self._get_file()
-        imp = Importer(good_file, username="admin")
+        imp = Importer(good_file, username=u"admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -493,7 +493,7 @@ class ImportFirefoxTest(TestImports):
 
     def test_is_not_firefox_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO()
+        bad_file = StringIO.StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -538,7 +538,7 @@ class ImportViews(TestViewBase):
             params={'api_key': self.api_key},
             upload_files=[('import_file',
                            'delicious.html',
-                           del_file.read().encode('utf-8'))],
+                           del_file.read())],
         )
         return res
 
@@ -549,7 +549,7 @@ class ImportViews(TestViewBase):
         # verify we get the form
         res = self.app.get('/admin/import')
         self.assertTrue(
-            '<form' in res.unicode_body,
+            '<form' in res.body,
             'Should have a form in the body for submitting the upload')
 
         res = self._upload()
@@ -592,10 +592,10 @@ class ImportViews(TestViewBase):
         # Prep the db with 2 other imports ahead of this user's.
         # We have to commit these since the request takes place in a new
         # session/transaction.
-        DBSession.add(ImportQueue(username='testing',
-                                  file_path='testing.txt'))
-        DBSession.add(ImportQueue(username='testing2',
-                                  file_path='testing2.txt'))
+        DBSession.add(ImportQueue(username=u'testing',
+                                  file_path=u'testing.txt'))
+        DBSession.add(ImportQueue(username=u'testing2',
+                                  file_path=u'testing2.txt'))
         DBSession.flush()
         transaction.commit()
 
@@ -606,13 +606,13 @@ class ImportViews(TestViewBase):
         # message about our import
         res = self.app.get('/admin/import')
 
-        self.assertTrue('<form' not in res.unicode_body, "We shouldn't have a form")
+        self.assertTrue('<form' not in res.body, "We shouldn't have a form")
         self.assertTrue(
-            'waiting in the queue' in res.unicode_body,
+            'waiting in the queue' in res.body,
             "We want to display a waiting message.")
         self.assertTrue(
-            '2 other imports' in res.unicode_body,
-            "We want to display a count message." + res.unicode_body)
+            '2 other imports' in res.body,
+            "We want to display a count message." + res.body)
 
     def test_completed_dont_count(self):
         """Once completed, we should get the form again"""
@@ -620,8 +620,8 @@ class ImportViews(TestViewBase):
 
         # add out completed one
         q = ImportQueue(
-            username='admin',
-            file_path='testing.txt'
+            username=u'admin',
+            file_path=u'testing.txt'
         )
         q.completed = datetime.now()
         q.status = 2
@@ -632,7 +632,7 @@ class ImportViews(TestViewBase):
         # message about our import
         res = self.app.get('/admin/import')
 
-        self.assertTrue('<form' in res.unicode_body, "We should have a form")
+        self.assertTrue('<form' in res.body, "We should have a form")
 
     def test_empty_upload(self):
         """Verify if error message is shown if no file is tried to upload"""
@@ -644,5 +644,5 @@ class ImportViews(TestViewBase):
             upload_files=[],
         )
         self.assertTrue(
-            'Please provide a file to import' in res.unicode_body,
+            'Please provide a file to import' in res.body,
             "Error message should be present")

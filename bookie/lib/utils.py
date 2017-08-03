@@ -1,7 +1,7 @@
 """Generic and small utilities that are used in Bookie"""
 import re
-from urllib.parse import urlparse
-from urllib.parse import quote
+from urlparse import urlparse
+from urllib import quote
 from textblob import TextBlob
 
 
@@ -44,6 +44,6 @@ def suggest_tags(data):
 
 def url_fix(url, charset='UTF-8'):
     """Normalize the URL if it contains Non-ASCII chars"""
-    if isinstance(url, str):
+    if isinstance(url, unicode):
         url = url.encode(charset)
     return quote(url, safe="%/:=&?~#+!$,;'@()*[]")

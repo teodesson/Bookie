@@ -20,7 +20,7 @@ class TestFulltext(TestCase):
         """Setup Tests"""
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'main')
+        app = get_app(BOOKIE_TEST_INI, 'bookie')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -82,8 +82,8 @@ class TestFulltext(TestCase):
             search_res.status == '200 OK',
             "Status is 200: " + search_res.status)
         self.assertTrue(
-            'my google desc' in search_res.unicode_body,
-            "We should find our description on the page: " + search_res.unicode_body)
+            'my google desc' in search_res.body,
+            "We should find our description on the page: " + search_res.body)
 
         search_res = self.testapp.get('/api/v1/admin/bmarks/search/python')
         self.assertTrue(
@@ -91,9 +91,9 @@ class TestFulltext(TestCase):
             "Status is 200: " + search_res.status)
 
         self.assertTrue(
-            'my google desc' in search_res.unicode_body,
+            'my google desc' in search_res.body,
             "Tag search should find our description on the page: " +
-            search_res.unicode_body)
+            search_res.body)
 
         search_res = self.testapp.get(
             '/api/v1/admin/bmarks/search/extended%20notes')
@@ -101,9 +101,9 @@ class TestFulltext(TestCase):
             search_res.status == '200 OK',
             "Status is 200: " + search_res.status)
         self.assertTrue(
-            'extended notes' in search_res.unicode_body,
+            'extended notes' in search_res.body,
             "Extended search should find our description on the page: " +
-            search_res.unicode_body)
+            search_res.body)
 
     def test_sqlite_update(self):
         """Verify that if we update a bookmark, fulltext is updated
@@ -123,8 +123,8 @@ class TestFulltext(TestCase):
             "Status is 200: " + search_res.status)
 
         self.assertTrue(
-            'icon' in search_res.unicode_body,
-            "We should find the new tag icon on the page: " + search_res.unicode_body)
+            'icon' in search_res.body,
+            "We should find the new tag icon on the page: " + search_res.body)
 
     def test_ajax_search(self):
         """Verify that we can get a json MorJSON response when ajax search"""
@@ -143,18 +143,18 @@ class TestFulltext(TestCase):
             "Status is 200: " + search_res.status)
 
         self.assertTrue(
-            'my google desc' in search_res.unicode_body,
-            "We should find our description on the page: " + search_res.unicode_body)
+            'my google desc' in search_res.body,
+            "We should find our description on the page: " + search_res.body)
 
         # also check for our specific json bits
         self.assertTrue(
-            'success' in search_res.unicode_body,
-            "We should see a success bit in the json: " + search_res.unicode_body)
+            'success' in search_res.body,
+            "We should see a success bit in the json: " + search_res.body)
 
         self.assertTrue(
-            'payload' in search_res.unicode_body,
-            "We should see a payload bit in the json: " + search_res.unicode_body)
+            'payload' in search_res.body,
+            "We should see a payload bit in the json: " + search_res.body)
 
         self.assertTrue(
-            'message' in search_res.unicode_body,
-            "We should see a message bit in the json: " + search_res.unicode_body)
+            'message' in search_res.body,
+            "We should see a message bit in the json: " + search_res.body)

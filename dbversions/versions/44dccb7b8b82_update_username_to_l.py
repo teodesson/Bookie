@@ -23,14 +23,14 @@ def upgrade():
 
     try:
         op.drop_constraint("bmarks_username_fkey", "bmarks")
-        print('dropped constraint')
+        print 'dropped constraint'
     except (sa.exc.OperationalError, NotImplementedError) as exc:
         # If it's not supported then pass
         pass
 
     sel = sa.select([users])
     for user in connection.execute(sel):
-        print('updating for user: ' + user['username'])
+        print 'updating for user: ' + user['username']
         lowered = sa.func.lower(user['username'])
 
         stmt = users.update().\
@@ -42,14 +42,14 @@ def upgrade():
             where(bmarks.c.username == user['username']).\
             values(username=lowered)
         connection.execute(stmt)
-        print('done user: ' + user['username'])
+        print 'done user: ' + user['username']
 
     try:
         op.create_foreign_key(
             "bmarks_username_fkey", "bmarks",
             "users", ["username"], ["username"])
 
-        print('added constraint')
+        print 'added constraint'
     except (sa.exc.OperationalError, NotImplementedError) as exc:
         # If it's not supported then pass
         pass

@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 
 @view_config(route_name="dashboard",
              renderer="/stats/dashboard.mako")
-def dashboard(request):
+def dashboard(self):
     """A public dashboard of the system"""
     return {}
 

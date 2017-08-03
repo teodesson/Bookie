@@ -27,7 +27,7 @@ class AccountViewsTest(TestViewBase):
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
             "The delete request has been queued" +
-            " and will be acted upon shortly." in res.unicode_body,
+            " and will be acted upon shortly." in res.body,
             msg="Request should contain the appropriate message.")
 
     def test_delete_all_bookmarks_with_wong_confirmation(self):
@@ -46,7 +46,7 @@ class AccountViewsTest(TestViewBase):
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
             "Delete request not confirmed. Please make sure" +
-            " to enter &#39;Delete&#39; to confirm." in res.unicode_body,
+            " to enter &#39;Delete&#39; to confirm." in res.body,
             msg="Request should contain the appropriate message.")
 
     def test_delete_all_bookmarks_without_confirmation(self):
@@ -65,5 +65,5 @@ class AccountViewsTest(TestViewBase):
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
             "Delete request not confirmed. Please make sure" +
-            " to enter &#39;Delete&#39; to confirm." in res.unicode_body,
+            " to enter &#39;Delete&#39; to confirm." in res.body,
             msg="Request should contain the appropriate message.")

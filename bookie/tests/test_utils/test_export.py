@@ -46,7 +46,7 @@ class TestExport(TestViewBase):
             'tags': u'',
         }
 
-        req_params = urllib.parse.urlencode(prms)
+        req_params = urllib.urlencode(prms)
         res = self.app.post(
             '/api/v1/admin/bmark?api_key={0}'.format(self.api_key),
             params=req_params,
@@ -84,9 +84,9 @@ class TestExport(TestViewBase):
             status=200)
 
         self.assertTrue(
-            "google.com" in res.unicode_body,
-            msg='Google is in the exported body: ' + res.unicode_body)
-        data = json.loads(res.unicode_body)
+            "google.com" in res.body,
+            msg='Google is in the exported body: ' + res.body)
+        data = json.loads(res.body)
 
         self.assertEqual(
             1,
@@ -104,9 +104,9 @@ class TestExport(TestViewBase):
             status=200)
 
         self.assertTrue(
-            "bmark.us" in res.unicode_body,
-            msg='Bmark is in the exported body: ' + res.unicode_body)
-        data = json.loads(res.unicode_body)
+            "bmark.us" in res.body,
+            msg='Bmark is in the exported body: ' + res.body)
+        data = json.loads(res.body)
 
         self.assertEqual(
             1,
@@ -122,12 +122,12 @@ class TestExport(TestViewBase):
         res = self.app.get('/admin/export?api_key=' + self.api_key, status=200)
 
         self.assertTrue(
-            "google.com" in res.unicode_body,
-            msg='Google is in the exported body: ' + res.unicode_body)
+            "google.com" in res.body,
+            msg='Google is in the exported body: ' + res.body)
 
         self.assertTrue(
-            'PRIVATE="1"' not in res.unicode_body,
-            "Bookmark should be a public bookmark: " + res.unicode_body)
+            'PRIVATE="1"' not in res.body,
+            "Bookmark should be a public bookmark: " + res.body)
 
     def test_export_view_accounts_for_privacy(self):
         """Test that we get IS_PRIVATE attribute for each bookmark during
@@ -137,12 +137,12 @@ class TestExport(TestViewBase):
         res = self.app.get('/admin/export?api_key=' + self.api_key, status=200)
 
         self.assertTrue(
-            "google.com" in res.unicode_body,
-            msg='Google is in the exported body: ' + res.unicode_body)
+            "google.com" in res.body,
+            msg='Google is in the exported body: ' + res.body)
 
         self.assertTrue(
-            'PRIVATE="1"' in res.unicode_body,
-            "Bookmark should be a private bookmark: " + res.unicode_body)
+            'PRIVATE="1"' in res.body,
+            "Bookmark should be a private bookmark: " + res.body)
 
     def test_export_view_is_sorted(self):
         """Test that we get bookmarks sorted by 'stored' attribute during
@@ -159,7 +159,7 @@ class TestExport(TestViewBase):
                 self.api_key),
             status=200)
 
-        data = json.loads(res.unicode_body)
+        data = json.loads(res.body)
 
         self.assertEqual(
             3,

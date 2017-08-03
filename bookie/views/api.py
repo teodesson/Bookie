@@ -6,7 +6,7 @@ from pyramid.settings import asbool
 from pyramid.view import view_config
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import contains_eager
-from io import StringIO
+from StringIO import StringIO
 
 from bookie.bcelery import tasks
 from bookie.lib.access import api_auth
@@ -791,12 +791,9 @@ def suspend_acct(request):
     # we need to get the user from the email
     email = params.get('email', None)
 
-    try:
-        if email is None and hasattr(request, 'json_body'):
-            # try the json body
-            email = request.json_body.get('email', None)
-    except ValueError:
-        email = None
+    if email is None and hasattr(request, 'json_body'):
+        # try the json body
+        email = request.json_body.get('email', None)
 
     if user is None and email is None:
         request.response.status_int = 406
@@ -899,7 +896,7 @@ def account_activate(request):
             try:
                 user = UserMgr.get(username=username)
                 user.username = new_username
-            except IntegrityError as exc:
+            except IntegrityError, exc:
                 request.response.status_int = 500
                 return _api_response(request, {
                     'error': 'There was an issue setting your new username',
@@ -1158,10 +1155,10 @@ def new_user(request):
 
     u = User()
 
-    u.username = str(rdict.get('username'))
+    u.username = unicode(rdict.get('username'))
     if u.username:
         u.username = u.username.lower()
-    u.email = str(rdict.get('email')).lower()
+    u.email = unicode(rdict.get('email')).lower()
     passwd = get_random_word(8)
     u.password = passwd
     u.activated = True
@@ -1178,7 +1175,7 @@ def new_user(request):
         ret['random_pass'] = passwd
         return _api_response(request, ret)
 
-    except IntegrityError as exc:
+    except IntegrityError, exc:
         # We might try to add a user that already exists.
         LOG.error(exc)
         request.response.status_int = 400
@@ -1233,7 +1230,7 @@ def del_user(request):
             'success': True,
             'message': 'Removed user: ' + del_username
         })
-    except Exception as exc:
+    except Exception, exc:
         # There might be cascade issues or something that causes us to fail in
         # removing.
         LOG.error(exc)
@@ -1256,7 +1253,7 @@ def admin_bmark_remove(request):
     try:
         bmark = BmarkMgr.get_by_hash(hash_id,
                                      username=username)
-        print(bmark)
+        print bmark
         if bmark:
             DBSession.delete(bmark)
             return _api_response(request, {

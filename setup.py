@@ -8,28 +8,14 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid',
-	'pyramid_tm',
-    'SQLAlchemy',
+    'pyramid==1.5',
+    'SQLAlchemy==0.9.4',
     'transaction',
     'zope.sqlalchemy',
+    'WebError',
     'WebTest',
-    'BeautifulSoup4',
+    'BeautifulSoup==3.2.0',
     'pyramid_mako',
-	'decorator',
-	'celery',
-	'python-dateutil',
-	'topia.termextract',
-	'Unidecode',
-	'py-bcrypt',
-	'convoy',
-	'Whoosh',
-	'feedparser',
-	'tweepy',
-	'Whoosh',
-	'breadability',
-	'textblob',
-	'pymysql'
 ]
 
 

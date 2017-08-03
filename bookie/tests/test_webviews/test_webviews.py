@@ -46,8 +46,8 @@ class BookieViewsTest(TestViewBase):
             "200 OK",
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
-            body_str in res.unicode_body,
-            msg="Request should contain body_str: " + res.unicode_body)
+            body_str in res.body,
+            msg="Request should contain body_str: " + res.body)
 
     def test_recent_page(self):
         """We should be able to page through the list"""
@@ -58,8 +58,8 @@ class BookieViewsTest(TestViewBase):
             "200 OK",
             msg='recent page 1 status is 200, ' + res.status)
         self.assertTrue(
-            body_str in res.unicode_body,
-            msg="Page 1 should contain body_str: " + res.unicode_body)
+            body_str in res.body,
+            msg="Page 1 should contain body_str: " + res.body)
 
     def test_import_auth_failed(self):
         """Veryify that without the right API key we get forbidden"""
@@ -83,8 +83,8 @@ class BookieViewsTest(TestViewBase):
             "200 OK",
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
-            changes_link in res.unicode_body,
-            msg="Changes link should appear: " + res.unicode_body)
+            changes_link in res.body,
+            msg="Changes link should appear: " + res.body)
 
 
 class TestNewBookmark(TestViewBase):
@@ -95,7 +95,7 @@ class TestNewBookmark(TestViewBase):
         self._login_admin()
         res = self.app.get('/admin/new')
         self.assertTrue(
-            'Add Bookmark' in res.unicode_body,
+            'Add Bookmark' in res.body,
             "Should see the add bookmark title")
 
     def test_manual_entry_error(self):
@@ -110,7 +110,7 @@ class TestNewBookmark(TestViewBase):
                 'extended': '',
                 'tags': ''
             })
-        self.assertIn('not valid', res.unicode_body)
+        self.assertIn('not valid', res.body)
 
     def test_existing_url_entry_error(self):
         """ Verify the User has received error message that URL exists"""
@@ -142,7 +142,7 @@ class TestNewBookmark(TestViewBase):
                 'extended': '',
                 'tags': ''
             })
-        self.assertIn(existing_url_message, res.unicode_body)
+        self.assertIn(existing_url_message, res.body)
 
     def test_bookmark_url_encoding(self):
         """Verify that the URL containing Non-ASCII chars are normalized"""
@@ -285,8 +285,8 @@ class TestRSSFeeds(TestViewBase):
             "200 OK",
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
-            body_str in res.unicode_body,
-            msg="Request should contain rss str: " + res.unicode_body)
+            body_str in res.body,
+            msg="Request should contain rss str: " + res.body)
 
     def test_rss_matches_request(self):
         """The url should match the /recent request with tags."""
@@ -298,8 +298,8 @@ class TestRSSFeeds(TestViewBase):
             "200 OK",
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
-            body_str in res.unicode_body,
-            msg="Request should contain rss url: " + res.unicode_body)
+            body_str in res.body,
+            msg="Request should contain rss url: " + res.body)
 
     def test_rss_is_parseable(self):
         """The rss feed should be a parseable feed."""
@@ -315,7 +315,7 @@ class TestRSSFeeds(TestViewBase):
 
         # http://packages.python.org/feedparser/
         # introduction.html#parsing-a-feed-from-a-string
-        parsed = feedparser.parse(res.unicode_body)
+        parsed = feedparser.parse(res.body)
         links = []
         for entry in parsed.entries:
             links.append({
@@ -377,8 +377,8 @@ class ReadableTest(TestViewBase):
             "200 OK",
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
-            body_str in res.unicode_body,
-            msg="Request should contain body_str: " + res.unicode_body)
+            body_str in res.body,
+            msg="Request should contain body_str: " + res.body)
 
     def test_readable_title_wt_desc(self):
         self._add_bmark_wt_desc()
@@ -391,5 +391,5 @@ class ReadableTest(TestViewBase):
             "200 OK",
             msg='recent status is 200, ' + res.status)
         self.assertTrue(
-            body_str in res.unicode_body,
-            msg="Request should contain body_str: " + res.unicode_body)
+            body_str in res.body,
+            msg="Request should contain body_str: " + res.body)

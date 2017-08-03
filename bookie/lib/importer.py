@@ -7,10 +7,10 @@ import time
 import transaction
 from datetime import datetime
 from dateutil import parser as dateparser
-from bs4 import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 from lxml import etree
 from lxml.etree import XMLSyntaxError
-from html.parser import HTMLParser
+from HTMLParser import HTMLParser
 from bookie.lib.urlhash import generate_hash
 from bookie.models import (
     BmarkMgr,
@@ -27,7 +27,7 @@ def store_import_file(storage_dir, username, files):
     # save the file off to the temp storage
     out_dir = "{storage_dir}/{randdir}".format(
         storage_dir=storage_dir,
-        randdir=random.choice(string.ascii_letters),
+        randdir=random.choice(string.letters),
     )
 
     # make sure the directory exists
@@ -37,7 +37,7 @@ def store_import_file(storage_dir, username, files):
 
     out_fname = "{0}/{1}.{2}".format(
         out_dir, username, files.filename)
-    out = open(out_fname, 'wb')
+    out = open(out_fname, 'w')
     out.write(files.file.read())
     out.close()
 
@@ -75,12 +75,11 @@ class Importer(object):
     @staticmethod
     def can_handle(file_io):
         """This is meant to be implemented in subclasses"""
-        raise NotImplementedError("Please implement can_handle in your importer")
+        raise NotImplementedError("Please implement this in your importer")
 
     def process(self, fulltext=None):
         """Meant to be implemented in subclasses"""
-        #raise NotImplementedError("Please implement process in your importer: " + str(type(self)))
-        pass
+        raise NotImplementedError("Please implement this in your importer")
 
     def save_bookmark(self, url, desc, ext, tags, dt=None, is_private=False):
         """Save the bookmark to the db
@@ -197,10 +196,10 @@ class DelImporter(Importer):
 
             try:
                 bmark = self.save_bookmark(
-                    str(link['href']),
-                    str(htmlParser.unescape(link.text)),
-                    str(extended),
-                    u" ".join(str(link.get('tags', '')).split(u',')),
+                    unicode(link['href']),
+                    unicode(htmlParser.unescape(link.text)),
+                    unicode(extended),
+                    u" ".join(unicode(link.get('tags', '')).split(u',')),
                     dt=add_date,
                     is_private=is_private)
                 count = count + 1
@@ -290,10 +289,10 @@ class DelXMLImporter(Importer):
 
             try:
                 bmark = self.save_bookmark(
-                    str(post.get('href')),
-                    str(post.get('description')),
-                    str(post.get('extended')),
-                    str(post.get('tag')),
+                    unicode(post.get('href')),
+                    unicode(post.get('description')),
+                    unicode(post.get('extended')),
+                    unicode(post.get('tag')),
                     dt=add_date,
                     is_private=is_private)
                 count = count + 1
@@ -432,9 +431,9 @@ class GBookmarkImporter(Importer):
         for url, metadata in urls.items():
             try:
                 bmark = self.save_bookmark(
-                    str(url),
-                    str(metadata['description']),
-                    str(metadata['extended']),
+                    unicode(url),
+                    unicode(metadata['description']),
+                    unicode(metadata['extended']),
                     u" ".join(metadata['tags']),
                     dt=metadata['date_added'])
                 DBSession.flush()
@@ -512,7 +511,7 @@ class FBookmarkImporter(Importer):
         if (self.file_handle.closed):
             self.file_handle = open(self.file_handle.name)
 
-        content = self.file_handle.read()
+        content = self.file_handle.read().decode("UTF-8")
         # HACK: Firefox' JSON writer leaves a trailing comma
         # HACK: at the end of the array, which no parser accepts
         if content.endswith(u"}]},]}"):
@@ -578,9 +577,9 @@ class FBookmarkImporter(Importer):
                 metadata['tags'] = ''
             try:
                 bookmark = self.save_bookmark(
-                    str(url),
-                    str(metadata['title']),
-                    str(metadata['annos'][0]['value']),
+                    unicode(url),
+                    unicode(metadata['title']),
+                    unicode(metadata['annos'][0]['value']),
                     u" ".join(metadata['tags']),
                     dt=datetime.fromtimestamp(
                         metadata['dateAdded']/1e6))

@@ -24,7 +24,7 @@ class TestSocialOauthView(TestViewBase):
                            },
                            status=200)
         self.assertTrue(
-            message in res.unicode_body,
+            message in res.body,
             "when same credentials are used backend should show message")
 
     def test_denied(self):
@@ -37,5 +37,5 @@ class TestSocialOauthView(TestViewBase):
                            status=200)
         error_msg = 'Connection Denied'
         self.assertTrue(
-            error_msg in res.unicode_body,
+            error_msg in res.body,
             'Denied message displayed to the user.')
