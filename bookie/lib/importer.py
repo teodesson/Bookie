@@ -7,10 +7,10 @@ import time
 import transaction
 from datetime import datetime
 from dateutil import parser as dateparser
-from bs4 import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 from lxml import etree
 from lxml.etree import XMLSyntaxError
-from html.parser import HTMLParser
+from HTMLParser import HTMLParser
 from bookie.lib.urlhash import generate_hash
 from bookie.models import (
     BmarkMgr,

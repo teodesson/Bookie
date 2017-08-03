@@ -1,5 +1,5 @@
 
-from bs4 import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 import requests
 from tweepy import OAuthHandler
 from tweepy import API

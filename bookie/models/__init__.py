@@ -2,7 +2,7 @@
 import logging
 
 from topia.termextract import extract
-from bs4 import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 from bookie.lib.urlhash import generate_hash
 
 from datetime import datetime
@@ -19,7 +19,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Table
 from sqlalchemy import select
 from unidecode import unidecode
-from urllib.parse import urlparse
+from urlparse import urlparse
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import aliased
