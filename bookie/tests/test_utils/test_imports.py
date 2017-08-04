@@ -1,11 +1,11 @@
 """Test that we're meeting delicious API specifications"""
 import logging
 import os
-import StringIO
 import transaction
 import unittest
 
 from datetime import datetime
+from io import StringIO
 
 from bookie.models import DBSession
 from bookie.models import Bmark
@@ -48,9 +48,9 @@ class TestImports(unittest.TestCase):
             "We should have 1 private bookmark: " + str(len(private_res)))
 
         # verify we can find a bookmark by url and check tags, etc
-        check_url = u'http://www.ndftz.com/nickelanddime.png'
-        url_description = u'nickelanddime.png (PNG Image, 1200x1400 pixels)' \
-                          u' - Scaled (64%) - "Test"'
+        check_url = 'http://www.ndftz.com/nickelanddime.png'
+        url_description = 'nickelanddime.png (PNG Image, 1200x1400 pixels)' \
+                          ' - Scaled (64%) - "Test"'
         check_url_hashed = generate_hash(check_url)
         found = Bmark.query.filter(Bmark.hash_id == check_url_hashed).one()
 
@@ -128,7 +128,7 @@ class TestImports(unittest.TestCase):
         # verify we can find a bookmark by url and check tags, etc
         check_url = 'http://www.alistapart.com/'
         check_url_hashed = generate_hash(check_url)
-        url_description = u'A List Apart "Test"'
+        url_description = 'A List Apart "Test"'
         found = Bmark.query.filter(Bmark.hash_id == check_url_hashed).one()
 
         self.assertTrue(
@@ -234,7 +234,7 @@ class ImporterBaseTest(TestImports):
         del_file = os.path.join(loc, 'delicious.html')
 
         with open(del_file) as del_io:
-            imp = Importer(del_io, username=u"admin")
+            imp = Importer(del_io, username="admin")
 
             self.assertTrue(
                 isinstance(imp, DelImporter),
@@ -246,7 +246,7 @@ class ImporterBaseTest(TestImports):
         google_file = os.path.join(loc, 'googlebookmarks.html')
 
         with open(google_file) as google_io:
-            imp = Importer(google_io, username=u"admin")
+            imp = Importer(google_io, username="admin")
 
             self.assertTrue(
                 isinstance(imp, GBookmarkImporter),
@@ -296,7 +296,7 @@ class ImportDeliciousTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct records"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -305,11 +305,11 @@ class ImportDeliciousTest(TestImports):
     def test_dupe_imports(self):
         """If we import twice, we shouldn't end up with duplicate bmarks"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         good_file = self._get_del_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -352,7 +352,7 @@ class ImportDeliciousXMLTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct records"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -361,11 +361,11 @@ class ImportDeliciousXMLTest(TestImports):
     def test_dupe_imports(self):
         """If we import twice, we shouldn't end up with duplicate bmarks"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         good_file = self._get_del_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # Now let's do some db sanity checks.
@@ -404,7 +404,7 @@ class ImportGoogleTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct google bookmarks"""
         good_file = self._get_google_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -416,7 +416,7 @@ class ImportGoogleTest(TestImports):
         bmarklet_file = os.path.join(loc, 'bookmarklet_error.htm')
         fh = open(bmarklet_file)
 
-        imp = Importer(fh, username=u"admin")
+        imp = Importer(fh, username="admin")
         imp.process()
 
         res = Bmark.query.all()
@@ -461,7 +461,7 @@ class ImportChromeTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct google bookmarks"""
         good_file = self._get_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -506,7 +506,7 @@ class ImportFirefoxTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct firefox bookmarks"""
         good_file = self._get_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -515,7 +515,7 @@ class ImportFirefoxTest(TestImports):
     def test_nested_folder(self):
         """Verify if bookmarks in nested folders are imported"""
         good_file = self._get_file()
-        imp = Importer(good_file, username=u"admin")
+        imp = Importer(good_file, username="admin")
         imp.process()
 
         check_url = 'https://github.com/bookieio/Bookie/issues/71'
@@ -592,10 +592,10 @@ class ImportViews(TestViewBase):
         # Prep the db with 2 other imports ahead of this user's.
         # We have to commit these since the request takes place in a new
         # session/transaction.
-        DBSession.add(ImportQueue(username=u'testing',
-                                  file_path=u'testing.txt'))
-        DBSession.add(ImportQueue(username=u'testing2',
-                                  file_path=u'testing2.txt'))
+        DBSession.add(ImportQueue(username='testing',
+                                  file_path='testing.txt'))
+        DBSession.add(ImportQueue(username='testing2',
+                                  file_path='testing2.txt'))
         DBSession.flush()
         transaction.commit()
 
@@ -620,8 +620,8 @@ class ImportViews(TestViewBase):
 
         # add out completed one
         q = ImportQueue(
-            username=u'admin',
-            file_path=u'testing.txt'
+            username='admin',
+            file_path='testing.txt'
         )
         q.completed = datetime.now()
         q.status = 2

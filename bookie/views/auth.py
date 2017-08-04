@@ -36,13 +36,13 @@ def login(request):
     login_url = route_url('login', request)
     referrer = request.url
     if referrer == login_url:
-        referrer = u'/'  # never use the login form itself as came_from
+        referrer = '/'  # never use the login form itself as came_from
 
     came_from = request.params.get('came_from', referrer)
 
-    message = u''
-    login = u''
-    password = u''
+    message = ''
+    login = ''
+    password = ''
 
     if 'form.submitted' in request.params:
         login = request.params['login'].lower()

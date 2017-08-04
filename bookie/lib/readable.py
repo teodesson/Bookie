@@ -121,12 +121,12 @@ class ReadUrl(object):
             url = url.decode('utf-8')
 
         # first check if we have a special url with the #! content in it
-        if u'#!' in url:
+        if '#!' in url:
             # rewrite it with _escaped_fragment_=xxx
             # we should be doing with this some regex, but cheating for now
-            idx = url.index(u'#')
+            idx = url.index('#')
             fragment = url[idx:]
-            clean_url = u"{0}?_escaped_fragment_={1}".format(url[0:idx],
+            clean_url = "{0}?_escaped_fragment_={1}".format(url[0:idx],
                                                              fragment)
         else:
             # we need to clean up the url first, we can't have any anchor tag
@@ -134,18 +134,18 @@ class ReadUrl(object):
             parsed = urlparse(url)
 
             # We cannot parse urls that aren't http, https, or ftp://
-            if (parsed.scheme not in (u'http', u'https', u'ftp')):
+            if (parsed.scheme not in ('http', 'https', 'ftp')):
                 read.error(
                     STATUS_CODES['901'],
                     'Invalid url scheme for readable content')
                 return read
 
             if parsed.query is not None and parsed.query != '':
-                query = u'?'
+                query = '?'
             else:
-                query = u''
+                query = ''
 
-            clean_url = u"{0}://{1}{2}{query}{3}".format(
+            clean_url = "{0}://{1}{2}{query}{3}".format(
                 parsed[0],
                 parsed[1],
                 parsed[2],

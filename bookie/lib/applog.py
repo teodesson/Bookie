@@ -30,7 +30,7 @@ class Log(object):
 
 class AuthLog(Log):
     """Store auth specific log items"""
-    component = u"AUTH"
+    component = "AUTH"
 
     @staticmethod
     def login(username, success, password=None):
@@ -39,7 +39,7 @@ class AuthLog(Log):
         passwd = lambda x: None if password is None else {'password': password}
 
         status = get_status(success)
-        message = u"User {0} attempted to login {1}".format(username,
+        message = "User {0} attempted to login {1}".format(username,
                                                             success)
         data = {
             'user': username,
@@ -52,7 +52,7 @@ class AuthLog(Log):
     @staticmethod
     def disabled(username):
         """Attempt to log into a disabled account"""
-        msg = u"{0} is a disabled user account".format(username)
+        msg = "{0} is a disabled user account".format(username)
 
         data = {
             'user': username,
@@ -65,9 +65,9 @@ class AuthLog(Log):
     def reactivate(username, success=True, code=None):
         """The account was marked for reactivation"""
         if success:
-            msg = u"{0} was reactivated".format(username)
+            msg = "{0} was reactivated".format(username)
         else:
-            msg = u"{0} attempted to reactivate with invalid credentials"
+            msg = "{0} attempted to reactivate with invalid credentials"
             msg = msg.format(username)
 
         LOG.debug(msg)
@@ -85,7 +85,7 @@ class AuthLog(Log):
 
 class BmarkLog(Log):
     """Bookmark specific log items"""
-    component = u"BMARKS"
+    component = "BMARKS"
 
     @staticmethod
     def export(for_user, current_user):
@@ -100,7 +100,7 @@ class BmarkLog(Log):
             current_user = "None"
 
         status = get_status(your_export)
-        message = u"User {0} exported the bookmarks for {1}".format(
+        message = "User {0} exported the bookmarks for {1}".format(
             current_user, for_user)
 
         data = {

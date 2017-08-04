@@ -31,12 +31,12 @@ def random_string(length=None):
     """
     chars = string.ascii_uppercase + string.digits
     str_length = length if length is not None else random_int()
-    return unicode(u''.join(random.choice(chars) for x in range(str_length)))
+    return str(''.join(random.choice(chars) for x in range(str_length)))
 
 
 def random_url():
     """Generate a random url that is totally bogus."""
-    url = u"http://{0}.com".format(random_string())
+    url = "http://{0}.com".format(random_string())
     return url
 
 
@@ -53,7 +53,7 @@ def make_applog(message=None, status=None):
         'component': random_string(10),
         'status': status,
         'message': message,
-        'payload': u'',
+        'payload': '',
     })
     return alog
 
@@ -69,9 +69,9 @@ def make_twitter_connection(username='admin'):
     tconnection = TwitterConnection(username=username,
                                     is_active=True,
                                     last_connection=datetime.now(),
-                                    uid=u'1022699448',
-                                    access_key=u'dummy',
-                                    access_secret=u'dummy',
+                                    uid='1022699448',
+                                    access_key='dummy',
+                                    access_secret='dummy',
                                     twitter_username='bookie',
                                     refresh_date=datetime.now())
     DBSession.add(tconnection)
@@ -82,11 +82,11 @@ def make_twitter_connection(username='admin'):
 def make_bookmark(user=None, is_private=False):
     """Generate a fake bookmark for testing use."""
     bmark = Bmark(random_url(),
-                  username=u"admin",
+                  username="admin",
                   desc=random_string(),
                   ext=random_string(),
                   is_private=is_private,
-                  tags=u"bookmarks")
+                  tags="bookmarks")
 
     if user:
         bmark.username = user.username

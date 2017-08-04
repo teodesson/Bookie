@@ -119,8 +119,8 @@ class BCeleryTaskTest(TestDBBase):
 
     def test_task_delete_non_activated_account(self):
         """The task should delete non activated users"""
-        email = u'testingdelete@gmail.com'
-        new_user = UserMgr.signup_user(email, u'testcase')
+        email = 'testingdelete@gmail.com'
+        new_user = UserMgr.signup_user(email, 'testcase')
         users = User.query.all()
         activations = Activation.query.all()
         self.assertEqual(

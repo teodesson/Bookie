@@ -15,19 +15,19 @@ class TestSuggestTags(TestCase):
         """It returns only nouns from the strings."""
         test_value = 'google drives autonomous cars'
         self.assertEqual(
-            set([u'cars', u'autonomous']),
+            set(['cars', 'autonomous']),
             suggest_tags(test_value))
 
     def test_splits_urls_for_nouns(self):
         """It pulls nouns from a url string."""
         test_value = "http://google.com/drives/autonomous/cars"
         self.assertEqual(
-            set([u'cars', u'autonomous']),
+            set(['cars', 'autonomous']),
             suggest_tags(test_value))
 
     def test_splits_url_parts(self):
         """- and _ should be good split points"""
         test_value = "http://google.com/drives-autonomous_cars"
         self.assertEqual(
-            set([u'cars', u'autonomous']),
+            set(['cars', 'autonomous']),
             suggest_tags(test_value))

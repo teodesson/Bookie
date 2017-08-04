@@ -2,7 +2,7 @@
 
 """
 import logging
-from urllib import (
+from urllib.parse import (
     quote,
     urlencode,
 )
@@ -35,10 +35,10 @@ class TestInviteSetup(TestDBBase):
     def testInviteCreatesUser(self):
         """We should get a new user when inviting something"""
         me = User()
-        me.username = u'me'
-        me.email = u'me.com'
+        me.username = 'me'
+        me.email = 'me.com'
         me.invite_ct = 2
-        you = me.invite(u'you.com')
+        you = me.invite('you.com')
 
         self.assertEqual(
             'you.com',
@@ -87,7 +87,7 @@ class TestOpenSignup(TestViewBase):
 
     def tearDown(self):
         super(TestOpenSignup, self).tearDown()
-        User.query.filter(User.email == u'testing@newuser.com').delete()
+        User.query.filter(User.email == 'testing@newuser.com').delete()
 
     def testSignupRenders(self):
         """A signup form is kind of required."""
@@ -124,7 +124,7 @@ class TestOpenSignup(TestViewBase):
     def testUsernameAlreadyThere(self):
         """Signup requires an unique username entry."""
         email = 'testing@gmail.com'
-        new_user = UserMgr.signup_user(email, u'invite')
+        new_user = UserMgr.signup_user(email, 'invite')
         DBSession.add(new_user)
 
         transaction.commit()
@@ -139,17 +139,17 @@ class TestOpenSignup(TestViewBase):
         res = self.app.post(
             url,
             params={
-                'password': u'testing',
+                'password': 'testing',
                 'username': user.username,
                 'code': user.activation.code,
-                'new_username': u'admin',
+                'new_username': 'admin',
             })
         self.assertIn('Username already', res.body)
 
     def testResetFormDisplay(self):
         """Make sure you can GET the reset form."""
         email = 'testing@gmail.com'
-        new_user = UserMgr.signup_user(email, u'invite')
+        new_user = UserMgr.signup_user(email, 'invite')
         DBSession.add(new_user)
 
         transaction.commit()
@@ -167,7 +167,7 @@ class TestOpenSignup(TestViewBase):
     def testUsernameIsLowercase(self):
         """Signup saves username as all lowercase"""
         email = 'TestingUsername@test.com'
-        new_user = UserMgr.signup_user(email, u'testcase')
+        new_user = UserMgr.signup_user(email, 'testcase')
         DBSession.add(new_user)
 
         transaction.commit()
@@ -176,7 +176,7 @@ class TestOpenSignup(TestViewBase):
             User.username == email.lower()).one()
 
         params = {
-            'password': u'testing',
+            'password': 'testing',
             'username': user.username,
             'code': user.activation.code,
             'new_username': 'TESTLowercase'
@@ -192,8 +192,8 @@ class TestOpenSignup(TestViewBase):
 
     def testSignupWorks(self):
         """Signing up stores an activation."""
-        email = u'testing@newuser.com'
-        UserMgr.signup_user(email, u'testcase')
+        email = 'testing@newuser.com'
+        UserMgr.signup_user(email, 'testcase')
 
         activations = Activation.query.all()
 

@@ -119,7 +119,7 @@ def edit(request):
     """
     rdict = request.matchdict
     params = request.params
-    url = params.get('url', u"")
+    url = params.get('url', "")
     title = params.get('description', None)
     new = False
     MAX_TAGS = 10
@@ -144,7 +144,7 @@ def edit(request):
                 url = bmark.hashed.url
         else:
             # Hash the url and make sure that it doesn't exist
-            if url != u"":
+            if url != "":
                 new_url_hash = generate_hash(url)
 
                 test_exists = BmarkMgr.get_by_hash(

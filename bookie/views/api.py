@@ -295,14 +295,14 @@ def bmark_add(request):
                 stored_time = None
 
             # check to see if we know where this is coming from
-            inserted_by = params.get('inserted_by', u'unknown_api')
+            inserted_by = params.get('inserted_by', 'unknown_api')
 
             mark = BmarkMgr.store(
                 params['url'],
                 user.username,
-                params.get('description', u''),
-                params.get('extended', u''),
-                params.get('tags', u''),
+                params.get('description', ''),
+                params.get('extended', ''),
+                params.get('tags', ''),
                 dt=stored_time,
                 inserted_by=inserted_by,
                 is_private=asbool(params.get('is_private', False)),
@@ -317,7 +317,7 @@ def bmark_add(request):
             content = StringIO(params['content'])
             content.seek(0)
             parsed = ReadContent.parse(content,
-                                       content_type=u"text/html",
+                                       content_type="text/html",
                                        url=mark.hashed.url)
 
             mark.readable = Readable()
@@ -822,7 +822,7 @@ check your spam folder.""",
         })
 
     # mark them for reactivation
-    user.reactivate(u"FORGOTTEN")
+    user.reactivate("FORGOTTEN")
 
     # log it
     AuthLog.reactivate(user.username)

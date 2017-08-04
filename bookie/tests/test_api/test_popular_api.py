@@ -54,7 +54,7 @@ class BookiePopularAPITest(unittest.TestCase):
             DBSession.add(user)
             username = user.username
         else:
-            username = u'admin'
+            username = 'admin'
 
         b = Bmark(
             url=gen_random_word(12),
@@ -104,13 +104,13 @@ class BookiePopularAPITest(unittest.TestCase):
         previous_clicks = MAX_CLICKS
         for bmark in bmarks:
             self.assertEqual(
-                bmark[u'username'],
-                u'admin',
+                bmark['username'],
+                'admin',
                 "Only bookmarks by admin must be displayed")
             self.assertTrue(
                 bmark['clicks'] <= previous_clicks,
                 '{0} < {1}'.format(bmark['clicks'], previous_clicks))
-            previous_clicks = bmark[u'clicks']
+            previous_clicks = bmark['clicks']
 
         self._check_cors_headers(res)
         empty_db()
@@ -153,7 +153,7 @@ class BookiePopularAPITest(unittest.TestCase):
             self.assertTrue(
                 bmark['total_clicks'] <= previous_clicks,
                 '{0} <= {1}'.format(bmark['total_clicks'], previous_clicks))
-            previous_clicks = bmark[u'total_clicks']
+            previous_clicks = bmark['total_clicks']
 
         self._check_cors_headers(res)
         empty_db()

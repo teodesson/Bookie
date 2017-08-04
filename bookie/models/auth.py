@@ -101,7 +101,7 @@ class Activation(Base):
     password, etc.
 
     """
-    __tablename__ = u'activations'
+    __tablename__ = 'activations'
 
     id = Column(Integer, ForeignKey('users.id'), primary_key=True)
     code = Column(Unicode(60))
@@ -246,7 +246,7 @@ class UserMgr(object):
         new_user.api_key = User.gen_api_key()
 
         # they need to be deactivated
-        new_user.reactivate(u'invite')
+        new_user.reactivate('invite')
 
         # decrement the invite counter
         DBSession.add(new_user)
@@ -280,7 +280,7 @@ class User(Base):
 
     def __init__(self):
         """By default a user starts out deactivated"""
-        self.activation = Activation(u'signup')
+        self.activation = Activation('signup')
         self.activated = False
 
     def _set_password(self, password):

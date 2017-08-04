@@ -75,7 +75,7 @@ class TestAuthUserDB(TestDBBase):
         """Make sure removing an activation does not remove a user."""
         tst = User()
         tst.username = gen_random_word(10)
-        tst.activation = Activation(u'signup')
+        tst.activation = Activation('signup')
         DBSession.add(tst)
         DBSession.flush()
 
@@ -93,7 +93,7 @@ class TestAuthUserDB(TestDBBase):
         """Removing a user cascades the activations as well."""
         tst = User()
         tst.username = gen_random_word(10)
-        tst.activation = Activation(u'signup')
+        tst.activation = Activation('signup')
         DBSession.add(tst)
         DBSession.flush()
 
@@ -114,8 +114,8 @@ class TestAuthUserDB(TestDBBase):
     def test_non_activated_account(self):
         """Removing a non activated account"""
         # When all the conditions are satisfied, the account should be deleted.
-        email = u'testingdelete@gmail.com'
-        UserMgr.signup_user(email, u'testcase')
+        email = 'testingdelete@gmail.com'
+        UserMgr.signup_user(email, 'testcase')
         activations = Activation.query.all()
         users = User.query.all()
         self.assertEqual(
@@ -139,8 +139,8 @@ class TestAuthUserDB(TestDBBase):
             len(users),
             'We should have a total of 1 user still: ' + str(len(users)))
         # When the account is activated, it should not be deleted.
-        email = u'testingactivated@gmail.com'
-        UserMgr.signup_user(email, u'testcase')
+        email = 'testingactivated@gmail.com'
+        UserMgr.signup_user(email, 'testcase')
         activations = Activation.query.all()
         users = User.query.all()
         self.assertEqual(
@@ -165,8 +165,8 @@ class TestAuthUserDB(TestDBBase):
             'We should have a total of 2 users still: ' + str(len(users)))
         # When the account last login is not None, it should not be deleted.
         # This happens when a user forgets his/her password.
-        email = u'testinglastlogin@gmail.com'
-        UserMgr.signup_user(email, u'testcase')
+        email = 'testinglastlogin@gmail.com'
+        UserMgr.signup_user(email, 'testcase')
         activations = Activation.query.all()
         users = User.query.all()
         self.assertEqual(
@@ -190,8 +190,8 @@ class TestAuthUserDB(TestDBBase):
             len(users),
             'We should have a total of 3 users still: ' + str(len(users)))
         # The account should not be deleted before 30 days since signup.
-        email = u'testingdays@gmail.com'
-        UserMgr.signup_user(email, u'testcase')
+        email = 'testingdays@gmail.com'
+        UserMgr.signup_user(email, 'testcase')
         activations = Activation.query.all()
         users = User.query.all()
         self.assertEqual(
@@ -214,8 +214,8 @@ class TestAuthUserDB(TestDBBase):
             len(users),
             'We should have a total of 4 users still')
         # The account details should be shown if it is not asked to delete.
-        email = u'testingdetails@gmail.com'
-        UserMgr.signup_user(email, u'testcase')
+        email = 'testingdetails@gmail.com'
+        UserMgr.signup_user(email, 'testcase')
         activations = Activation.query.all()
         users = User.query.all()
         self.assertEqual(
@@ -236,7 +236,7 @@ class TestAuthUserDB(TestDBBase):
             False,
             account_details[0].activated)
         self.assertEqual(
-            u'testcase',
+            'testcase',
             account_details[0].invited_by)
 
 
@@ -258,7 +258,7 @@ class TestAuthMgr(TestCase):
 
     def test_get_username(self):
         """Fetching the user by the username"""
-        user = UserMgr.get(username=u'admin')
+        user = UserMgr.get(username='admin')
         self.assertEqual(
             user.id,
             1,
@@ -270,7 +270,7 @@ class TestAuthMgr(TestCase):
 
     def test_get_bad_user(self):
         """We shouldn't get a hit if the user is inactive"""
-        user = UserMgr.get(username=u'noexist')
+        user = UserMgr.get(username='noexist')
 
         self.assertEqual(
             user,

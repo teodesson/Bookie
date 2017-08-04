@@ -13,8 +13,8 @@ from bookie.models import (
 from bookie.tests import TestViewBase
 from bookie.tests.factory import make_bookmark
 
-GOOGLE_HASH = u'aa2239c17609b2'
-BMARKUS_HASH = u'c5c21717c99797'
+GOOGLE_HASH = 'aa2239c17609b2'
+BMARKUS_HASH = 'c5c21717c99797'
 
 LOG = logging.getLogger(__name__)
 
@@ -24,11 +24,11 @@ class BookieViewsTest(TestViewBase):
 
     def _add_bmark(self):
         # setup the default bookie bookmark
-        bmark_us = Bmark(u'http://bmark.us',
-                         username=u"admin",
-                         desc=u"Bookie Website",
-                         ext=u"Bookie Documentation Home",
-                         tags=u"bookmarks")
+        bmark_us = Bmark('http://bmark.us',
+                         username="admin",
+                         desc="Bookie Website",
+                         ext="Bookie Documentation Home",
+                         tags="bookmarks")
 
         bmark_us.stored = datetime.now()
         bmark_us.updated = datetime.now()
@@ -51,7 +51,7 @@ class BookieViewsTest(TestViewBase):
 
     def test_recent_page(self):
         """We should be able to page through the list"""
-        body_str = u"Prev"
+        body_str = "Prev"
         res = self.app.get('/recent?page=1')
         self.assertEqual(
             res.status,
@@ -116,7 +116,7 @@ class TestNewBookmark(TestViewBase):
         """ Verify the User has received error message that URL exists"""
         self._login_admin()
 
-        test_url = u"http://bmark.us/test"
+        test_url = "http://bmark.us/test"
         existing_url_message = "URL already Exists"
 
         # Add The Bookmark Once
@@ -164,8 +164,8 @@ class TestNewBookmark(TestViewBase):
             "302 Found",
             msg='recent status is 302 Found, ' + res.status)
 
-        saved_url = u"http://www.amazon.de/Molwanien-schadhaften-" \
-                    u"L%C3%A4chelns-Santo-Cilauro/dp/3453811380"
+        saved_url = "http://www.amazon.de/Molwanien-schadhaften-" \
+                    "L%C3%A4chelns-Santo-Cilauro/dp/3453811380"
 
         bmark = BmarkMgr.get_by_url(saved_url)
         self.assertNotEqual(bmark, None)
@@ -174,8 +174,8 @@ class TestNewBookmark(TestViewBase):
     def test_bookmark_privacy(self):
         """Verify the bookmark's privacy"""
         self._login_admin()
-        test_url = u"http://bmark.us/test"
-        test_url_private = u"http://bmark.us/test/private"
+        test_url = "http://bmark.us/test"
+        test_url_private = "http://bmark.us/test/private"
 
         # Add the public bookmark.
         res = self.app.post(
@@ -215,7 +215,7 @@ class TestNewBookmark(TestViewBase):
     def test_edit_bookmark_privacy(self):
         """Verify that we can edit bookmark's privacy"""
         self._login_admin()
-        test_url = u"http://bmark.us/test"
+        test_url = "http://bmark.us/test"
 
         # Add the bookmark.
         res = self.app.post(
@@ -342,11 +342,11 @@ class TestRSSFeeds(TestViewBase):
 class ReadableTest(TestViewBase):
     def _add_bmark_w_desc(self):
         # setup the default bookie bookmark
-        bmark_us = Bmark(u'http://bmark.us',
-                         username=u"admin",
-                         desc=u"Bookie Website",
-                         ext=u"Bookie Documentation Home",
-                         tags=u"bookmarks")
+        bmark_us = Bmark('http://bmark.us',
+                         username="admin",
+                         desc="Bookie Website",
+                         ext="Bookie Documentation Home",
+                         tags="bookmarks")
 
         bmark_us.stored = datetime.now()
         bmark_us.updated = datetime.now()
@@ -355,11 +355,11 @@ class ReadableTest(TestViewBase):
 
     def _add_bmark_wt_desc(self):
         # Setup the default google bookmark.
-        bmark_us = Bmark(u'http://google.com',
-                         username=u"admin",
-                         desc=u"",
-                         ext=u"Google Search Engine",
-                         tags=u"bookmarks")
+        bmark_us = Bmark('http://google.com',
+                         username="admin",
+                         desc="",
+                         ext="Google Search Engine",
+                         tags="bookmarks")
 
         bmark_us.stored = datetime.now()
         bmark_us.updated = datetime.now()

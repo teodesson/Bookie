@@ -41,10 +41,10 @@ class TestTagMgrStats(TestDBBase):
         tag_names = []
         for tag in tags:
             tag_names.append(tag.name)
-        bmark_tags = u" ".join(tag_names)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
+        bmark_tags = " ".join(tag_names)
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
 
         # Store the bookmark.
         bmark = make_bookmark(is_private=True)
@@ -76,10 +76,10 @@ class TestTagMgrStats(TestDBBase):
         tag_names = []
         for tag in tags:
             tag_names.append(tag.name)
-        bmark_tags = u" ".join(tag_names)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
+        bmark_tags = " ".join(tag_names)
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
 
         # Store the bookmark.
         bmark = make_bookmark(is_private=True)
@@ -110,10 +110,10 @@ class TestTagMgrStats(TestDBBase):
         tag_names = []
         for tag in tags:
             tag_names.append(tag.name)
-        bmark_tags = u" ".join(tag_names)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
+        bmark_tags = " ".join(tag_names)
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
 
         # Store the bookmark.
         bmark = make_bookmark(is_private=True)
@@ -151,10 +151,10 @@ class TestTagMgrStats(TestDBBase):
         tag_names = []
         for tag in tags:
             tag_names.append(tag.name)
-        bmark_tags = u" ".join(tag_names)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
+        bmark_tags = " ".join(tag_names)
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
 
         # Store the bookmark.
         bmark = make_bookmark(is_private=True)
@@ -191,10 +191,10 @@ class TestTagMgrStats(TestDBBase):
         tag_names = []
         for tag in tags:
             tag_names.append(tag.name)
-        bmark_tags = u" ".join(tag_names)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
+        bmark_tags = " ".join(tag_names)
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
 
         # Store the bookmark.
         bmark = make_bookmark(is_private=True)

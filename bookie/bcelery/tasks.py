@@ -259,14 +259,14 @@ def fulltext_index_bookmark(bid, content):
         elif b.readable:
             found_content = b.readable.clean_content
         else:
-            found_content = u""
+            found_content = ""
 
         try:
             writer.update_document(
                 bid=str(b.bid),
-                description=b.description if b.description else u"",
-                extended=b.extended if b.extended else u"",
-                tags=b.tag_str if b.tag_str else u"",
+                description=b.description if b.description else "",
+                extended=b.extended if b.extended else "",
+                tags=b.tag_str if b.tag_str else "",
                 readable=found_content,
                 username=b.username,
                 is_private=b.is_private,

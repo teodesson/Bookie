@@ -18,13 +18,13 @@ class TestExport(TestViewBase):
     def _get_good_request(self, is_private=False, url=None, dt=None):
         """Return the basics for a good add bookmark request"""
         if not url:
-            url = u'http://google.com'
+            url = 'http://google.com'
 
         prms = {
             'url': url,
-            'description': u'This is my google desc',
-            'extended': u'And some extended notes about it in full form',
-            'tags': u'python search',
+            'description': 'This is my google desc',
+            'extended': 'And some extended notes about it in full form',
+            'tags': 'python search',
             'is_private': is_private,
             'dt': dt
         }
@@ -40,10 +40,10 @@ class TestExport(TestViewBase):
         """Return the basics for a good add bookmark request
             without any tags"""
         prms = {
-            'url': u'http://bmark.us',
-            'description': u'This is my bmark desc',
-            'extended': u'And some extended notes about it in full form',
-            'tags': u'',
+            'url': 'http://bmark.us',
+            'description': 'This is my bmark desc',
+            'extended': 'And some extended notes about it in full form',
+            'tags': '',
         }
 
         req_params = urllib.urlencode(prms)
@@ -147,11 +147,11 @@ class TestExport(TestViewBase):
     def test_export_view_is_sorted(self):
         """Test that we get bookmarks sorted by 'stored' attribute during
         export"""
-        self._get_good_request(url=u'https://google.com',
+        self._get_good_request(url='https://google.com',
                                dt=self._get_random_date())
-        self._get_good_request(url=u'https://twitter.com',
+        self._get_good_request(url='https://twitter.com',
                                dt=self._get_random_date())
-        self._get_good_request(url=u'https://github.com',
+        self._get_good_request(url='https://github.com',
                                dt=self._get_random_date())
 
         res = self.app.get(

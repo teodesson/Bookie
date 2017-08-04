@@ -27,8 +27,8 @@ class TestAuthWeb(TestCase):
         """Verify we get the login form"""
         res = self.testapp.get('/login', status=200)
 
-        body_str = u"Log In"
-        form_str = u'name="login"'
+        body_str = "Log In"
+        form_str = 'name="login"'
 
         self.assertTrue(
             body_str in res.body,
@@ -43,9 +43,9 @@ class TestAuthWeb(TestCase):
         """Verify a good login"""
 
         # the migrations add a default admin account
-        user_data = {'login': u'admin',
-                     'password': u'admin',
-                     'form.submitted': u'true'}
+        user_data = {'login': 'admin',
+                     'password': 'admin',
+                     'form.submitted': 'true'}
 
         res = self.testapp.post('/login',
                                 params=user_data)
@@ -64,9 +64,9 @@ class TestAuthWeb(TestCase):
         """Verify a good login"""
 
         # the migrations add a default admin account
-        user_data = {'login': u'ADMIN',
-                     'password': u'admin',
-                     'form.submitted': u'true'}
+        user_data = {'login': 'ADMIN',
+                     'password': 'admin',
+                     'form.submitted': 'true'}
 
         res = self.testapp.post('/login',
                                 params=user_data)
@@ -85,9 +85,9 @@ class TestAuthWeb(TestCase):
         """Verify a bad login"""
 
         # the migrations add a default admin account
-        user_data = {'login': u'admin',
-                     'password': u'wrongpass',
-                     'form.submitted': u'true'}
+        user_data = {'login': 'admin',
+                     'password': 'wrongpass',
+                     'form.submitted': 'true'}
 
         res = self.testapp.post('/login',
                                 params=user_data)
@@ -106,9 +106,9 @@ class TestAuthWeb(TestCase):
         """Verify null login form submission fails"""
 
         user_data = {
-            'login': u'',
-            'password': u'',
-            'form.submitted': u'true'
+            'login': '',
+            'password': '',
+            'form.submitted': 'true'
         }
 
         res = self.testapp.post('/login',
@@ -129,9 +129,9 @@ class TestAuthWeb(TestCase):
         it hits login URL"""
 
         user_data = {
-            'login': u'admin',
-            'password': u'admin',
-            'form.submitted': u'true'
+            'login': 'admin',
+            'password': 'admin',
+            'form.submitted': 'true'
         }
 
         res = self.testapp.post('/login',

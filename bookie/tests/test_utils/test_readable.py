@@ -61,7 +61,7 @@ class TestReadable(TestCase):
         self.assertTrue(read.content is not None, "Content should not be none")
         self.assertTrue(
             'Bookie' in read.content,
-            u"The word Bookie is in the content: " + unicode(read.content))
+            "The word Bookie is in the content: " + str(read.content))
 
     def test_non_net_url(self):
         """I might be bookmarking something internal bookie can't access"""
@@ -133,10 +133,10 @@ class TestReadableFulltext(TestCase):
         """Return the basics for a good add bookmark request"""
         session = DBSession()
         prms = {
-            'url': u'http://google.com',
-            'description': u'This is my google desc',
-            'extended': u'And some extended notes about it in full form',
-            'tags': u'python search',
+            'url': 'http://google.com',
+            'description': 'This is my google desc',
+            'extended': 'And some extended notes about it in full form',
+            'tags': 'python search',
             'api_key': API_KEY,
             'content': 'bmark content is the best kind of content man',
         }

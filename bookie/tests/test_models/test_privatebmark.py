@@ -58,10 +58,10 @@ class TestPrivateBmark(TestDBBase):
         """Verify the value of is_private defaults to True"""
         user = User()
         user.username = gen_random_word(10)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
-        bmark_tags = u'python test'
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
+        bmark_tags = 'python test'
         bmark = BmarkMgr.store(
             url=bmark_url,
             username=user.username,
@@ -78,10 +78,10 @@ class TestPrivateBmark(TestDBBase):
         """Verify the value of is_private is False"""
         user = User()
         user.username = gen_random_word(10)
-        bmark_url = u'http://bmark.us'
-        bmark_desc = u'This is a test bookmark'
-        bmark_ext = u'Some extended notes'
-        bmark_tags = u'python test'
+        bmark_url = 'http://bmark.us'
+        bmark_desc = 'This is a test bookmark'
+        bmark_ext = 'Some extended notes'
+        bmark_tags = 'python test'
         bmark = BmarkMgr.store(
             url=bmark_url,
             username=user.username,

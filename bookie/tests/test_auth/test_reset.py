@@ -79,7 +79,7 @@ class TestReactivateFunctional(TestCase):
 
         """
         res = self.testapp.post('/api/v1/suspend',
-                                params={'email': u'testing@dummy.com'},
+                                params={'email': 'testing@dummy.com'},
                                 status=200)
 
         success = json.loads(res.body)
@@ -98,7 +98,7 @@ class TestReactivateFunctional(TestCase):
 
         """
         res = self.testapp.post('/api/v1/suspend',
-                                params={'email': u'testing@dummy.com'},
+                                params={'email': 'testing@dummy.com'},
                                 status=200)
         self.assertTrue(mock_sendmail.called)
 
@@ -108,7 +108,7 @@ class TestReactivateFunctional(TestCase):
             "Should be successful with admin email address")
 
         res = self.testapp.post('/api/v1/suspend',
-                                params={'email': u'testing@dummy.com'},
+                                params={'email': 'testing@dummy.com'},
                                 status=406)
 
         success = json.loads(res.body)
@@ -131,7 +131,7 @@ class TestReactivateFunctional(TestCase):
 
         """
         res = self.testapp.post('/api/v1/suspend',
-                                params={'email': u'testing@dummy.com'},
+                                params={'email': 'testing@dummy.com'},
                                 status=200)
         self.assertTrue(mock_sendmail.called)
 

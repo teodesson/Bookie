@@ -40,12 +40,12 @@ class TestFulltext(TestCase):
         """Return the basics for a good add bookmark request"""
         session = DBSession()
         prms = {
-            'url': u'http://google.com',
-            'description': u'This is my google desc SEE',
-            'extended': u'And some extended notes about it in full form',
-            'tags': u'python search',
+            'url': 'http://google.com',
+            'description': 'This is my google desc SEE',
+            'extended': 'And some extended notes about it in full form',
+            'tags': 'python search',
             'api_key': API_KEY,
-            'username': u'admin',
+            'username': 'admin',
             'is_private': is_private,
         }
 
@@ -115,7 +115,7 @@ class TestFulltext(TestCase):
         self._get_good_request()
 
         # now we need to do another request with updated tag string
-        self._get_good_request(new_tags=u"google books icons")
+        self._get_good_request(new_tags="google books icons")
 
         search_res = self.testapp.get('/admin/results?search=icon')
         self.assertTrue(

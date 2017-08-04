@@ -45,8 +45,8 @@ class AdminApiTest(unittest.TestCase):
         """DB Needs some imports to be able to query."""
         # add out completed one
         q = ImportQueue(
-            username=u'admin',
-            file_path=u'testing.txt'
+            username='admin',
+            file_path='testing.txt'
         )
         DBSession.add(q)
         transaction.commit()
@@ -88,7 +88,7 @@ class AdminApiTest(unittest.TestCase):
             status=200)
         data = json.loads(res.body)
         self.assertEqual(True, data['status'], "Status should be True")
-        self.assertEqual(u'Removed non activated accounts', data['message'])
+        self.assertEqual('Removed non activated accounts', data['message'])
 
     def test_invite_ct(self):
         """Test we can call and get the invite counts."""
@@ -104,7 +104,7 @@ class AdminApiTest(unittest.TestCase):
         found = False
         invite_count = None
         for user, count in data:
-            if user == u'admin':
+            if user == 'admin':
                 found = True
                 invite_count = count
 
@@ -191,8 +191,8 @@ class AdminApiTest(unittest.TestCase):
 
     def test_user_delete(self):
         """Verify we can remove a user and their bookmarks via api."""
-        bob = factory.make_user(username=u'bob')
-        bob.activation = Activation(u'signup')
+        bob = factory.make_user(username='bob')
+        bob.activation = Activation('signup')
 
         factory.make_bookmark(user=bob)
         transaction.commit()
@@ -209,5 +209,5 @@ class AdminApiTest(unittest.TestCase):
         self.assertTrue(data.get('success'))
 
         # Verify that we have no bookmark for the user any longer.
-        bmarks = Bmark.query.filter(Bmark.username == u'bob').all()
+        bmarks = Bmark.query.filter(Bmark.username == 'bob').all()
         self.assertEqual(0, len(bmarks))

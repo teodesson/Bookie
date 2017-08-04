@@ -128,10 +128,10 @@ class TagMgr(object):
         Currently it only supports space delimited
 
         """
-        if not tag_str or tag_str == u'':
+        if not tag_str or tag_str == '':
             return {}
 
-        tag_list = set([tag.lower().strip() for tag in tag_str.split(u" ")])
+        tag_list = set([tag.lower().strip() for tag in tag_str.split(" ")])
         tag_objects = {}
 
         for tag in TagMgr.find(tags=tag_list):
@@ -330,9 +330,9 @@ class Readable(Base):
 def sync_readable_content(mapper, connection, target):
     def _clean_content(content):
         if content:
-            return u' '.join(BeautifulSoup(content).findAll(text=True))
+            return ' '.join(BeautifulSoup(content).findAll(text=True))
         else:
-            return u""
+            return ""
 
     target.clean_content = _clean_content(target.content)
 
@@ -719,7 +719,7 @@ class Bmark(Base):
 
     def tag_string(self):
         """Generate a single spaced string of our tags"""
-        return u" ".join([tag for tag in self.tags])
+        return " ".join([tag for tag in self.tags])
 
     def update_tags(self, tag_string):
         """Given a tag string, split and update our tags to be these"""
@@ -750,7 +750,7 @@ def bmark_fulltext_insert_update(mapper, connection, target):
     """Update things before insert/update for the fulltext needs
 
     """
-    content = u""
+    content = ""
     if target.readable and target.readable.clean_content:
         content = target.readable.clean_content
 

@@ -1,4 +1,3 @@
-import ConfigParser
 import logging
 import os
 import random
@@ -6,6 +5,7 @@ import shutil
 import transaction
 import unittest
 
+from configparser import ConfigParser
 from logging.config import fileConfig
 from pyramid import testing
 
@@ -29,7 +29,7 @@ from bookie.models.fulltext import _reset_index
 
 global_config = {}
 
-ini = ConfigParser.ConfigParser()
+ini = ConfigParser()
 
 # we need to pull the right ini for the test we want to run
 # by default pullup test.ini, but we might want to test mysql, pgsql, etc
@@ -60,10 +60,10 @@ except:
 
 
 def gen_random_word(wordLen):
-    word = u''
+    word = ''
     for i in range(wordLen):
-        word += random.choice((u'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
-                               u'tuvwxyz0123456789/&='))
+        word += random.choice(('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs'
+                               'tuvwxyz0123456789/&='))
     return word
 
 
@@ -88,7 +88,7 @@ class TestViewBase(unittest.TestCase):
         """Setup Tests"""
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.app = TestApp(app)
         self.config = testing.setUp()
@@ -108,9 +108,9 @@ class TestViewBase(unittest.TestCase):
         self.app.post(
             '/login',
             params={
-                "login": u"admin",
-                "password": u"admin",
-                "form.submitted": u"Log In",
+                "login": "admin",
+                "password": "admin",
+                "form.submitted": "Log In",
             },
             status=302)
 
@@ -132,7 +132,7 @@ def empty_db():
     ImportQueue.query.delete()
     # Delete the users not admin in the system.
     Activation.query.delete()
-    User.query.filter(User.username != u'admin').delete()
+    User.query.filter(User.username != 'admin').delete()
 
     AppLog.query.delete()
     DBSession.flush()

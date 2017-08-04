@@ -19,7 +19,7 @@ from bookie.models import (
 )
 
 
-IMPORTED = u"importer"
+IMPORTED = "importer"
 COMMIT_SIZE = 25
 
 
@@ -152,7 +152,7 @@ class DelImporter(Importer):
         uses <h3> tags and Delicious does not in order to differentiate these
         two formats.
         """
-        delicious_doctype = u'DOCTYPE NETSCAPE-Bookmark-file-1'
+        delicious_doctype = 'DOCTYPE NETSCAPE-Bookmark-file-1'
 
         soup = BeautifulSoup(file_io)
         can_handle = False
@@ -179,7 +179,7 @@ class DelImporter(Importer):
             if tag.nextSibling and tag.nextSibling.name == 'dd':
                 extended = tag.nextSibling.text
             else:
-                extended = u""
+                extended = ""
 
             link = tag.a
 
@@ -196,10 +196,10 @@ class DelImporter(Importer):
 
             try:
                 bmark = self.save_bookmark(
-                    unicode(link['href']),
-                    unicode(htmlParser.unescape(link.text)),
-                    unicode(extended),
-                    u" ".join(unicode(link.get('tags', '')).split(u',')),
+                    str(link['href']),
+                    str(htmlParser.unescape(link.text)),
+                    str(extended),
+                    " ".join(str(link.get('tags', '')).split(',')),
                     dt=add_date,
                     is_private=is_private)
                 count = count + 1
@@ -289,10 +289,10 @@ class DelXMLImporter(Importer):
 
             try:
                 bmark = self.save_bookmark(
-                    unicode(post.get('href')),
-                    unicode(post.get('description')),
-                    unicode(post.get('extended')),
-                    unicode(post.get('tag')),
+                    str(post.get('href')),
+                    str(post.get('description')),
+                    str(post.get('extended')),
+                    str(post.get('tag')),
                     dt=add_date,
                     is_private=is_private)
                 count = count + 1
@@ -431,10 +431,10 @@ class GBookmarkImporter(Importer):
         for url, metadata in urls.items():
             try:
                 bmark = self.save_bookmark(
-                    unicode(url),
-                    unicode(metadata['description']),
-                    unicode(metadata['extended']),
-                    u" ".join(metadata['tags']),
+                    str(url),
+                    str(metadata['description']),
+                    str(metadata['extended']),
+                    " ".join(metadata['tags']),
                     dt=metadata['date_added'])
                 DBSession.flush()
             except InvalidBookmark:
@@ -514,8 +514,8 @@ class FBookmarkImporter(Importer):
         content = self.file_handle.read().decode("UTF-8")
         # HACK: Firefox' JSON writer leaves a trailing comma
         # HACK: at the end of the array, which no parser accepts
-        if content.endswith(u"}]},]}"):
-            content = content[:-6] + u"}]}]}"
+        if content.endswith("}]},]}"):
+            content = content[:-6] + "}]}]}"
         root = json.loads(content)
 
         # make a dictionary of unique bookmarks
@@ -577,10 +577,10 @@ class FBookmarkImporter(Importer):
                 metadata['tags'] = ''
             try:
                 bookmark = self.save_bookmark(
-                    unicode(url),
-                    unicode(metadata['title']),
-                    unicode(metadata['annos'][0]['value']),
-                    u" ".join(metadata['tags']),
+                    str(url),
+                    str(metadata['title']),
+                    str(metadata['annos'][0]['value']),
+                    " ".join(metadata['tags']),
                     dt=datetime.fromtimestamp(
                         metadata['dateAdded']/1e6))
                 DBSession.flush()

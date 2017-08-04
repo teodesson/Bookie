@@ -24,8 +24,8 @@ from bookie.tests.factory import make_bookmark
 from datetime import datetime
 
 
-GOOGLE_HASH = u'aa2239c17609b2'
-BMARKUS_HASH = u'c5c21717c99797'
+GOOGLE_HASH = 'aa2239c17609b2'
+BMARKUS_HASH = 'c5c21717c99797'
 LOG = logging.getLogger(__name__)
 
 API_KEY = None
@@ -63,28 +63,28 @@ class BookieAPITest(unittest.TestCase):
         """Return the basics for a good add bookmark request"""
         session = DBSession()
         if not username:
-            username = u'admin'
+            username = 'admin'
         if not api_key:
             api_key = API_KEY
         if not url:
-            url = u'http://google.com'
+            url = 'http://google.com'
 
         # the main bookmark, added second to prove popular will sort correctly
         prms = {
             'url': url,
-            'description': u'This is my google desc',
-            'extended': u'And some extended notes about it in full form',
-            'tags': u'python search',
+            'description': 'This is my google desc',
+            'extended': 'And some extended notes about it in full form',
+            'tags': 'python search',
             'api_key': api_key,
             'username': username,
-            'inserted_by': u'chrome_ext',
+            'inserted_by': 'chrome_ext',
             'is_private': is_private,
         }
 
         # if we want to test the readable fulltext side we want to make sure we
         # pass content into the new bookmark
         if content:
-            prms['content'] = u"<p>There's some content in here dude</p>"
+            prms['content'] = "<p>There's some content in here dude</p>"
 
         # rself.assertEqualparams = urllib.urlencode(prms)
         res = self.testapp.post(
@@ -95,18 +95,18 @@ class BookieAPITest(unittest.TestCase):
 
         if second_bmark:
             prms = {
-                'url': u'http://bmark.us',
-                'description': u'Bookie',
-                'extended': u'Exteded notes',
-                'tags': u'bookmarks',
+                'url': 'http://bmark.us',
+                'description': 'Bookie',
+                'extended': 'Exteded notes',
+                'tags': 'bookmarks',
                 'api_key': API_KEY,
-                'username': u'admin',
-                'inserted_by': u'chrome_ext',
+                'username': 'admin',
+                'inserted_by': 'chrome_ext',
             }
 
             # if we want to test the readable fulltext side we want to make
             # sure we pass content into the new bookmark
-            prms['content'] = u"<h1>Second bookmark man</h1>"
+            prms['content'] = "<h1>Second bookmark man</h1>"
 
             # rself.assertEqualparams = urllib.urlencode(prms)
             res = self.testapp.post(
@@ -125,15 +125,15 @@ class BookieAPITest(unittest.TestCase):
     def _setup_user_bookmark_count(self):
         """Fake user bookmark counts are inserted into the database"""
         test_date_1 = datetime(2013, 11, 25)
-        stat1 = factory.make_user_bookmark_count(username=u'admin',
+        stat1 = factory.make_user_bookmark_count(username='admin',
                                                  data=20,
                                                  tstamp=test_date_1)
         test_date_2 = datetime(2013, 11, 15)
-        stat2 = factory.make_user_bookmark_count(username=u'admin',
+        stat2 = factory.make_user_bookmark_count(username='admin',
                                                  data=30,
                                                  tstamp=test_date_2)
         test_date_3 = datetime(2013, 12, 28)
-        stat3 = factory.make_user_bookmark_count(username=u'admin',
+        stat3 = factory.make_user_bookmark_count(username='admin',
                                                  data=15,
                                                  tstamp=test_date_3)
         transaction.commit()
@@ -142,33 +142,33 @@ class BookieAPITest(unittest.TestCase):
     def _make_test_bookmarks(self):
         """Create a new test user and bookmarks by admin and test user"""
         # Make a test user.
-        test_user_username = u'test_user'
+        test_user_username = 'test_user'
         test_user = factory.make_user(username=test_user_username)
-        test_user.api_key = u'random_key'
+        test_user.api_key = 'random_key'
         transaction.commit()
         test_user = DBSession.merge(test_user)
 
         bmark_test = {}
         bmark_test['admin_public_bmark'] = {
-            'url': u'http://google1.com',
-            'username': u'admin',
+            'url': 'http://google1.com',
+            'username': 'admin',
             'api_key': API_KEY,
             'is_private': False,
         }
         bmark_test['admin_private_bmark'] = {
-            'url': u'http://google2.com',
-            'username': u'admin',
+            'url': 'http://google2.com',
+            'username': 'admin',
             'api_key': API_KEY,
             'is_private': True,
         }
         bmark_test['user_public_bmark'] = {
-            'url': u'http://google3.com',
+            'url': 'http://google3.com',
             'username': test_user.username,
             'api_key': test_user.api_key,
             'is_private': False,
         }
         bmark_test['user_private_bmark'] = {
-            'url': u'http://google4.com',
+            'url': 'http://google4.com',
             'username': test_user.username,
             'api_key': test_user.api_key,
             'is_private': True,
@@ -192,12 +192,12 @@ class BookieAPITest(unittest.TestCase):
         key = res['api_key']
 
         test_bmark = {
-            'url': u'http://bmark.us',
-            'description': u'Bookie',
-            'extended': u'Extended notes',
-            'tags': u'bookmarks',
+            'url': 'http://bmark.us',
+            'description': 'Bookie',
+            'extended': 'Extended notes',
+            'tags': 'bookmarks',
             'api_key': key,
-            'username': u'admin',
+            'username': 'admin',
             'is_private': False,
         }
 
@@ -226,12 +226,12 @@ class BookieAPITest(unittest.TestCase):
         key = res['api_key']
 
         test_bmark = {
-            'url': u'http://bmark.us',
-            'description': u'Bookie',
-            'extended': u'Extended notes',
-            'tags': u'bookmarks',
+            'url': 'http://bmark.us',
+            'description': 'Bookie',
+            'extended': 'Extended notes',
+            'tags': 'bookmarks',
             'api_key': key,
-            'username': u'admin',
+            'username': 'admin',
             'is_private': 'true',
         }
 
@@ -273,7 +273,7 @@ class BookieAPITest(unittest.TestCase):
         key = res['api_key']
 
         params = {
-            'description': u'This is my test desc',
+            'description': 'This is my test desc',
         }
 
         res = self.testapp.post(
@@ -298,24 +298,24 @@ class BookieAPITest(unittest.TestCase):
         bmark = json.loads(res.body)['bmark']
         self.assertEqual(
             GOOGLE_HASH,
-            bmark[u'hash_id'],
-            "The hash_id should match: " + str(bmark[u'hash_id']))
+            bmark['hash_id'],
+            "The hash_id should match: " + str(bmark['hash_id']))
 
         self.assertTrue(
-            u'tags' in bmark,
+            'tags' in bmark,
             "We should have a list of tags in the bmark returned")
 
         self.assertTrue(
-            bmark[u'tags'][0][u'name'] in [u'python', u'search'],
+            bmark['tags'][0]['name'] in ['python', 'search'],
             "Tag should be either python or search:" +
-            str(bmark[u'tags'][0][u'name']))
+            str(bmark['tags'][0]['name']))
 
         self.assertTrue(
-            u'readable' not in bmark,
+            'readable' not in bmark,
             "We should not have readable content")
 
         self.assertEqual(
-            u'python search', bmark[u'tag_str'],
+            'python search', bmark['tag_str'],
             "tag_str should be populated: " + str(dict(bmark)))
 
         # to get readble content we need to pass the flash with_content
@@ -329,7 +329,7 @@ class BookieAPITest(unittest.TestCase):
         bmark = json.loads(res.body)['bmark']
 
         self.assertTrue(
-            u'readable' in bmark,
+            'readable' in bmark,
             "We should have readable content")
 
         self.assertTrue(
@@ -376,24 +376,24 @@ class BookieAPITest(unittest.TestCase):
     def test_suggested_tags(self):
         """Suggestions based on the content of the bookmarked page"""
         # login into bookie
-        user_data = {'login': u'admin',
-                     'password': u'admin',
-                     'form.submitted': u'true'}
+        user_data = {'login': 'admin',
+                     'password': 'admin',
+                     'form.submitted': 'true'}
         res = self.testapp.post('/login',
                                 params=user_data)
         # Add a bookmark
         res = DBSession.execute(
             "SELECT api_key FROM users WHERE username = 'admin'").fetchone()
         key = res['api_key']
-        url = u'http://testing_tags.com'
+        url = 'http://testing_tags.com'
         # set the readable content for the bookmark
         path = os.getcwd()+"/bookie/tests/test_api/tag_test.txt"
         content = open(path, 'r').read()
         test_bmark = {
             'url': url,
-            'description': u'Bookie',
-            'extended': u'',
-            'tags': u'',
+            'description': 'Bookie',
+            'extended': '',
+            'tags': '',
             'api_key': key,
             'content': content,
         }
@@ -425,24 +425,24 @@ class BookieAPITest(unittest.TestCase):
     def test_suggested_tags_for_unparsed_bookmark(self):
         """Suggested tags for a bookmarked page whose readable is None"""
         # Login into bookie
-        user_data = {'login': u'admin',
-                     'password': u'admin',
-                     'form.submitted': u'true'}
+        user_data = {'login': 'admin',
+                     'password': 'admin',
+                     'form.submitted': 'true'}
         self.testapp.post('/login',
                           params=user_data)
         # Add a bookmark
         test_bmark = make_bookmark()
-        test_bmark.url = u'http://testing_tags.com'
-        test_bmark.description = u'Bookie'
+        test_bmark.url = 'http://testing_tags.com'
+        test_bmark.description = 'Bookie'
         path = os.getcwd() + "/bookie/tests/test_api/tag_test.txt"
         content = open(path, 'r').read()
         test_bmark.readable = Readable(content=content)
 
         # Add another bookmark with readable as None
-        new_url = u'http://testing_readable_none.com'
+        new_url = 'http://testing_readable_none.com'
         no_readable_bmark = make_bookmark()
         no_readable_bmark.url = new_url
-        no_readable_bmark.description = u'Readable of this bookmark is None'
+        no_readable_bmark.description = 'Readable of this bookmark is None'
 
         DBSession.add(test_bmark)
         DBSession.add(no_readable_bmark)
@@ -459,7 +459,7 @@ class BookieAPITest(unittest.TestCase):
         # As the Bookmark's readable is None the page should load without
         # error.
         self.testapp.post(
-            u'/admin/edit/' + no_readable_hash,
+            '/admin/edit/' + no_readable_hash,
             params=edit_bmark,
             status=200)
 
@@ -577,32 +577,32 @@ class BookieAPITest(unittest.TestCase):
         second_bmark = json.loads(res.body)['bmarks'][1]
         self.assertEqual(
             BMARKUS_HASH,
-            first_bmark[u'hash_id'],
-            "The hash_id should match: " + str(first_bmark[u'hash_id']))
+            first_bmark['hash_id'],
+            "The hash_id should match: " + str(first_bmark['hash_id']))
 
         self.assertTrue(
-            u'tags' in first_bmark,
+            'tags' in first_bmark,
             "We should have a list of tags in the bmark returned")
 
         self.assertEqual(
-            u'bookmarks',
-            first_bmark[u'tags'][0][u'name'],
+            'bookmarks',
+            first_bmark['tags'][0]['name'],
             "Tag should be bookmarks: " +
-            str(first_bmark[u'tags'][0][u'name']))
+            str(first_bmark['tags'][0]['name']))
 
         self.assertEqual(
             GOOGLE_HASH,
-            second_bmark[u'hash_id'],
-            "The hash_id should match: " + str(second_bmark[u'hash_id']))
+            second_bmark['hash_id'],
+            "The hash_id should match: " + str(second_bmark['hash_id']))
 
         self.assertTrue(
-            u'tags' in second_bmark,
+            'tags' in second_bmark,
             "We should have a list of tags in the bmark returned")
 
         self.assertTrue(
-            second_bmark[u'tags'][0][u'name'] in [u'python', u'search'],
+            second_bmark['tags'][0]['name'] in ['python', 'search'],
             "Tag should be either python or search:" +
-            str(second_bmark[u'tags'][0][u'name']))
+            str(second_bmark['tags'][0]['name']))
 
         res = self.testapp.get(
             '/api/v1/admin/bmarks?with_content=true&api_key=' + API_KEY,
@@ -628,17 +628,17 @@ class BookieAPITest(unittest.TestCase):
         bmark = json.loads(res.body)['bmarks'][1]
         self.assertEqual(
             GOOGLE_HASH,
-            bmark[u'hash_id'],
-            "The hash_id should match: " + str(bmark[u'hash_id']))
+            bmark['hash_id'],
+            "The hash_id should match: " + str(bmark['hash_id']))
 
         self.assertTrue(
-            u'tags' in bmark,
+            'tags' in bmark,
             "We should have a list of tags in the bmark returned")
 
         self.assertTrue(
-            bmark[u'tags'][0][u'name'] in [u'python', u'search'],
+            bmark['tags'][0]['name'] in ['python', 'search'],
             "Tag should be either python or search: " +
-            str(bmark[u'tags'][0][u'name']))
+            str(bmark['tags'][0]['name']))
 
         res = self.testapp.get(
             '/api/v1/admin/bmarks?with_content=true&api_key=' +
@@ -656,17 +656,17 @@ class BookieAPITest(unittest.TestCase):
         bmark = json.loads(res.body)['bmarks'][0]
         self.assertEqual(
             GOOGLE_HASH,
-            bmark[u'hash_id'],
-            "The hash_id should match: " + str(bmark[u'hash_id']))
+            bmark['hash_id'],
+            "The hash_id should match: " + str(bmark['hash_id']))
 
         self.assertTrue(
-            u'tags' in bmark,
+            'tags' in bmark,
             "We should have a list of tags in the bmark returned")
 
         self.assertTrue(
-            bmark[u'tags'][0][u'name'] in [u'python', u'search'],
+            bmark['tags'][0]['name'] in ['python', 'search'],
             "Tag should be either python or search:" +
-            str(bmark[u'tags'][0][u'name']))
+            str(bmark['tags'][0]['name']))
 
         res = self.testapp.get(
             '/api/v1/admin/bmarks?with_content=true&api_key=' + API_KEY,
@@ -719,10 +719,10 @@ class BookieAPITest(unittest.TestCase):
 
         self.assertEqual(
             GOOGLE_HASH,
-            bmark[u'hash_id'],
+            bmark['hash_id'],
             "The hash_id {0} should match: {1} ".format(
                 str(GOOGLE_HASH),
-                str(bmark[u'hash_id'])))
+                str(bmark['hash_id'])))
 
         self.assertTrue(
             'clicks' in bmark,
@@ -755,10 +755,10 @@ class BookieAPITest(unittest.TestCase):
             format(len(results)))
         for bmark in range(len(results)):
             self.assertTrue(
-                results[bmark][u'username'] == expected_res[bmark]['username']
-                and results[bmark][u'is_private'] ==
+                results[bmark]['username'] == expected_res[bmark]['username']
+                and results[bmark]['is_private'] ==
                 expected_res[bmark]['is_private'] and
-                results[bmark][u'url'] == expected_res[bmark]['url'],
+                results[bmark]['url'] == expected_res[bmark]['url'],
                 "We should have a bookmark from {0}".
                 format(expected_res[bmark]['username']))
         self._check_cors_headers(res)
@@ -786,10 +786,10 @@ class BookieAPITest(unittest.TestCase):
             format(len(results)))
         for bmark in range(len(results)):
             self.assertTrue(
-                results[bmark][u'username'] == expected_res[bmark]['username']
-                and results[bmark][u'is_private'] ==
+                results[bmark]['username'] == expected_res[bmark]['username']
+                and results[bmark]['is_private'] ==
                 expected_res[bmark]['is_private'] and
-                results[bmark][u'url'] == expected_res[bmark]['url'],
+                results[bmark]['url'] == expected_res[bmark]['url'],
                 "We should have a bookmark from {0}".
                 format(expected_res[bmark]['username']))
         self._check_cors_headers(res)
@@ -817,10 +817,10 @@ class BookieAPITest(unittest.TestCase):
             format(len(results)))
         for bmark in range(len(results)):
             self.assertTrue(
-                results[bmark][u'username'] == expected_res[bmark]['username']
-                and results[bmark][u'is_private'] ==
+                results[bmark]['username'] == expected_res[bmark]['username']
+                and results[bmark]['is_private'] ==
                 expected_res[bmark]['is_private'] and
-                results[bmark][u'url'] == expected_res[bmark]['url'],
+                results[bmark]['url'] == expected_res[bmark]['url'],
                 "We should have a bookmark from {0}".
                 format(expected_res[bmark]['username']))
         self._check_cors_headers(res)
@@ -871,8 +871,8 @@ class BookieAPITest(unittest.TestCase):
         res = self.testapp.get(
             '/api/v1/admin/tags/complete',
             params={
-                'tag': u'py',
-                'current': u'bookmarks',
+                'tag': 'py',
+                'current': 'bookmarks',
                 'api_key': API_KEY
             },
             status=200)
@@ -947,9 +947,9 @@ class BookieAPITest(unittest.TestCase):
         """Test getting a user's bookmark count over a period of time when
         only start_date is defined and end_date is None"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get(u'/api/v1/admin/stats/bmarkcount',
-                               params={u'api_key': API_KEY,
-                                       u'start_date': u'2013-11-16'},
+        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+                               params={'api_key': API_KEY,
+                                       'start_date': '2013-11-16'},
                                status=200)
         data = json.loads(res.body)
         count = data['count'][0]
@@ -961,18 +961,18 @@ class BookieAPITest(unittest.TestCase):
             count['tstamp'], str(test_dates[0][2]))
         # Test start_date and end_date.
         self.assertEqual(
-            data['start_date'], u'2013-11-16 00:00:00')
+            data['start_date'], '2013-11-16 00:00:00')
         self.assertEqual(
-            data['end_date'], u'2013-12-16 00:00:00')
+            data['end_date'], '2013-12-16 00:00:00')
 
     def test_start_defined_end_defined(self):
         """Test getting a user's bookmark count over a period of time when both
         start_date and end_date are defined"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get(u'/api/v1/admin/stats/bmarkcount',
-                               params={u'api_key': API_KEY,
-                                       u'start_date': u'2013-11-14',
-                                       u'end_date': u'2013-11-16'},
+        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+                               params={'api_key': API_KEY,
+                                       'start_date': '2013-11-14',
+                                       'end_date': '2013-11-16'},
                                status=200)
         data = json.loads(res.body)
         count = data['count'][0]
@@ -984,17 +984,17 @@ class BookieAPITest(unittest.TestCase):
             count['tstamp'], str(test_dates[1][2]))
         # Test start_date and end_date.
         self.assertEqual(
-            data['start_date'], u'2013-11-14 00:00:00')
+            data['start_date'], '2013-11-14 00:00:00')
         self.assertEqual(
-            data['end_date'], u'2013-11-16 00:00:00')
+            data['end_date'], '2013-11-16 00:00:00')
 
     def test_start_end_defined(self):
         """Test getting a user's bookmark count over a period of time when
         start_date is None and end_date is defined"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get(u'/api/v1/admin/stats/bmarkcount',
-                               params={u'api_key': API_KEY,
-                                       u'end_date': u'2013-12-29'},
+        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+                               params={'api_key': API_KEY,
+                                       'end_date': '2013-12-29'},
                                status=200)
         data = json.loads(res.body)
         count = data['count'][0]
@@ -1006,17 +1006,17 @@ class BookieAPITest(unittest.TestCase):
             count['tstamp'], str(test_dates[2][2]))
         # Test start_date and end_date.
         self.assertEqual(
-            data['start_date'], u'2013-11-29 00:00:00')
+            data['start_date'], '2013-11-29 00:00:00')
         self.assertEqual(
-            data['end_date'], u'2013-12-29 00:00:00')
+            data['end_date'], '2013-12-29 00:00:00')
 
     def test_start_of_month(self):
         """Test getting a user's bookmark count when start_date is the
         first day of the month"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get(u'/api/v1/admin/stats/bmarkcount',
-                               params={u'api_key': API_KEY,
-                                       u'start_date': u'2013-11-1'},
+        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+                               params={'api_key': API_KEY,
+                                       'start_date': '2013-11-1'},
                                status=200)
         data = json.loads(res.body)
         count = data['count']
@@ -1034,18 +1034,18 @@ class BookieAPITest(unittest.TestCase):
             count[1]['tstamp'], str(test_dates[0][2]))
         # Test start_date and end_date.
         self.assertEqual(
-            data['start_date'], u'2013-11-01 00:00:00')
+            data['start_date'], '2013-11-01 00:00:00')
         self.assertEqual(
-            data['end_date'], u'2013-11-30 00:00:00')
+            data['end_date'], '2013-11-30 00:00:00')
 
     def user_bookmark_count_authorization(self):
         """If no API_KEY is present, it is unauthorized request"""
-        self.testapp.get(u'/api/v1/admin/stats/bmarkcount',
+        self.testapp.get('/api/v1/admin/stats/bmarkcount',
                          status=403)
 
     def test_account_information(self):
         """Test getting a user's account information"""
-        res = self.testapp.get(u'/api/v1/admin/account?api_key=' + API_KEY,
+        res = self.testapp.get('/api/v1/admin/account?api_key=' + API_KEY,
                                status=200)
 
         # make sure we can decode the body
@@ -1069,10 +1069,10 @@ class BookieAPITest(unittest.TestCase):
     def test_account_update(self):
         """Test updating a user's account information"""
         params = {
-            'name': u'Test Admin'
+            'name': 'Test Admin'
         }
         res = self.testapp.post(
-            str(u"/api/v1/admin/account?api_key=" + str(API_KEY)),
+            str("/api/v1/admin/account?api_key=" + str(API_KEY)),
             content_type='application/json',
             params=json.dumps(params),
             status=200)
@@ -1101,7 +1101,7 @@ class BookieAPITest(unittest.TestCase):
     def test_account_apikey(self):
         """Fetching a user's api key"""
         res = self.testapp.get(
-            u"/api/v1/admin/api_key?api_key=" + str(API_KEY),
+            "/api/v1/admin/api_key?api_key=" + str(API_KEY),
             status=200)
 
         # make sure we can decode the body
@@ -1123,15 +1123,15 @@ class BookieAPITest(unittest.TestCase):
         # Set and Get the current api key
         # make_user doesn't set the api key of user so set it explicitly
         current_apikey = test_user.api_key = "random_key"
-        test_user.activation = Activation(u'signup')
+        test_user.activation = Activation('signup')
         transaction.commit()
 
         # send a request to reset the api key
         res = self.testapp.post(
             "/api/v1/test_user/api_key?api_key=" + current_apikey,
             content_type='application/json',
-            params={u'username': 'test_user',
-                    u'api_key': current_apikey},
+            params={'username': 'test_user',
+                    'api_key': current_apikey},
             status=200)
 
         # Get the user's api key from db
@@ -1231,9 +1231,9 @@ class BookieAPITest(unittest.TestCase):
 
         # Login a user and then test the validation of api key
 
-        user_data = {'login': u'admin',
-                     'password': u'admin',
-                     'form.submitted': u'true'}
+        user_data = {'login': 'admin',
+                     'password': 'admin',
+                     'form.submitted': 'true'}
 
         # Assuming user logged in without errors
         self.testapp.post('/login', params=user_data)
@@ -1270,7 +1270,7 @@ class BookieAPITest(unittest.TestCase):
 
     def test_bookmarks_stats(self):
         """Test the bookmark stats"""
-        res = self.testapp.get(u'/api/v1/stats/bookmarks',
+        res = self.testapp.get('/api/v1/stats/bookmarks',
                                status=200)
         data = json.loads(res.body)
         self.assertTrue(
@@ -1282,7 +1282,7 @@ class BookieAPITest(unittest.TestCase):
 
     def test_user_stats(self):
         """Test the user stats"""
-        res = self.testapp.get(u'/api/v1/stats/users',
+        res = self.testapp.get('/api/v1/stats/users',
                                status=200)
         data = json.loads(res.body)
         self.assertTrue(
@@ -1309,7 +1309,7 @@ class BookieAPITest(unittest.TestCase):
 
         for word in word_list:
             res = self.testapp.get(
-                u'/api/v1/admin/bmarks/{0}?&api_key={1}'.format(
+                '/api/v1/admin/bmarks/{0}?&api_key={1}'.format(
                     word, API_KEY),
                 status=200)
             data = json.loads(res.body)

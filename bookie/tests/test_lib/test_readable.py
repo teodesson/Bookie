@@ -17,7 +17,7 @@ class TestReadUrl(TestCase):
 
     def test_parse_malformed_url(self):
         """Properly error on an unparseable url."""
-        url = u'http://whttp://lucumr.pocoo.org/2012/8/5/stateless-and-proud/'
+        url = 'http://whttp://lucumr.pocoo.org/2012/8/5/stateless-and-proud/'
         read = readable.ReadUrl.parse(url)
         self.assertEqual(read.status, 901)
 
@@ -32,6 +32,6 @@ class TestReadUrl(TestCase):
         etc, cannot have their content fetched so don't bother.
 
         """
-        url = u'file://test.html'
+        url = 'file://test.html'
         read = readable.ReadUrl.parse(url)
         self.assertEqual(read.status, 901)
