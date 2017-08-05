@@ -113,7 +113,7 @@ class TestReadableFulltext(TestCase):
         """Setup Tests"""
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -163,8 +163,8 @@ class TestReadableFulltext(TestCase):
             search_res.status == '200 OK',
             "Status is 200: " + search_res.status)
         self.assertTrue(
-            'python' in search_res.body,
-            "We should find the python tag in the results: " + search_res.body)
+            'python' in search_res.unicode_body,
+            "We should find the python tag in the results: " + search_res.unicode_body)
 
     def test_fulltext_schema(self):
         """Verify the fulltext schema"""

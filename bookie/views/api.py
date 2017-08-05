@@ -24,7 +24,6 @@ from bookie.models import (
     BmarkMgr,
     DBSession,
     Hashed,
-    NoResultFound,
     Readable,
     TagMgr,
 )
@@ -259,7 +258,8 @@ def bmark_add(request):
                 username=user.username
             )
 
-        except NoResultFound:
+        except Exception as exc:
+            LOG.error(exc)
             mark = None
 
         if mark:
@@ -277,7 +277,8 @@ def bmark_add(request):
             mark = BmarkMgr.get_by_url(params['url'],
                                        username=user.username)
 
-        except NoResultFound:
+        except Exception as exc:
+            LOG.error(exc)
             mark = None
 
         if mark:
@@ -355,7 +356,8 @@ def bmark_remove(request):
             'message': "done",
         })
 
-    except NoResultFound:
+    except Exception as exc:
+        LOG.error(exc)
         request.response.status_code = 404
         return _api_response(request, {
             'error': 'Bookmark with hash id {0} not found.'.format(
@@ -1264,7 +1266,8 @@ def admin_bmark_remove(request):
                 'error': 'Bookmark not found.',
             })
 
-    except NoResultFound:
+    except Exception as exc:
+        LOG.error(exc)
         request.response.status_code = 404
         return _api_response(request, {
             'error': 'Bookmark with hash id {0} not found.'.format(

@@ -123,8 +123,8 @@ def empty_db():
     StatBookmark.query.delete()
     # BaseConnection and TwitterConnection should be individually
     # deleted https://bitbucket.org/zzzeek/sqlalchemy/issue/2349
-    BaseConnection.query.delete()
     TwitterConnection.query.delete()
+    BaseConnection.query.delete()
 
     Tag.query.delete()
     # we can't remove the toread tag we have from our commands

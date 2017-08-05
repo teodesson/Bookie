@@ -26,7 +26,7 @@ def get_url_title(url):
     """Return title of webpage """
     try:
         webpage = requests.get(url)
-        parsed_html = BeautifulSoup(webpage.content)
+        parsed_html = BeautifulSoup(webpage.content, 'html.parser')
         return webpage.url, parsed_html.title.string
     except:
         return url, ''

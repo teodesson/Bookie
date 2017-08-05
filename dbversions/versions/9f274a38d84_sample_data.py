@@ -22,12 +22,12 @@ def upgrade():
 
     # Add the initial admin user account.
     op.bulk_insert(user, [{
-        'username': u'admin',
-        'password': u'$2a$10$LoSEVbN6833RtwbGQlMhJOROgkjHNH4gjmzkLrIxOX1xLXNvaKFyW',
-        'email': u'testing@dummy.com',
+        'username': 'admin',
+        'password': '$2a$10$LoSEVbN6833RtwbGQlMhJOROgkjHNH4gjmzkLrIxOX1xLXNvaKFyW',
+        'email': 'testing@dummy.com',
         'activated': True,
         'is_admin': True,
-        'api_key': u'123456',
+        'api_key': '123456',
         }
     ])
 

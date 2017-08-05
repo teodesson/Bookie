@@ -36,8 +36,8 @@ def twitter_connect(request):
     elif oauth_token and oauth_verifier:
         # First make sure these credentials do not exist for another user.
         found = TwitterConnection.query.filter(
-            TwitterConnection.access_secret == unicode(oauth_token),
-            TwitterConnection.access_secret == unicode(oauth_verifier)).first()
+            TwitterConnection.access_secret == str(oauth_token),
+            TwitterConnection.access_secret == str(oauth_verifier)).first()
         if found:
             return {
                 'result': 'Invalid credentials, another user has claimed them'
@@ -58,7 +58,7 @@ def twitter_connect(request):
              error. Try connecting again.""")
 
         connections = TwitterConnection.query.filter(
-            TwitterConnection.uid == unicode(twitter_user.id)).all()
+            TwitterConnection.uid == str(twitter_user.id)).all()
         if connections and connections[0].username == request.user.username:
             # If any other user has provided the same credentials message is
             # shown
@@ -68,7 +68,7 @@ def twitter_connect(request):
         credentials = {
             'is_active': True,
             'last_connection': datetime.now(),
-            'uid': unicode(twitter_user.id),
+            'uid': str(twitter_user.id),
             'access_key': access_token.key,
             'access_secret': access_token.secret,
             'twitter_username': twitter_user.screen_name,

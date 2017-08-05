@@ -93,13 +93,13 @@ class TestOpenSignup(TestViewBase):
         """A signup form is kind of required."""
         res = self.app.get('/signup')
 
-        self.assertIn('Sign up for Bookie', res.body)
-        self.assertNotIn('class="error"', res.body)
+        self.assertIn('Sign up for Bookie', res.unicode_body)
+        self.assertNotIn('class="error"', res.unicode_body)
 
     def testEmailRequired(self):
         """Signup requires an email entry."""
         res = self.app.post('/signup_process')
-        self.assertIn('Please supply', res.body)
+        self.assertIn('Please supply', res.unicode_body)
 
     def testEmailAlreadyThere(self):
         """Signup requires an email entry."""
@@ -109,7 +109,7 @@ class TestOpenSignup(TestViewBase):
                 'email': 'testing@dummy.com'
             }
         )
-        self.assertIn('already signed up', res.body)
+        self.assertIn('already signed up', res.unicode_body)
 
     def testEmailIsLowercase(self):
         """Signup saves email as all lowercase"""
@@ -119,7 +119,7 @@ class TestOpenSignup(TestViewBase):
                 'email': 'CAPITALTesting@Dummy.cOm'
             }
         )
-        self.assertIn('capitaltesting@dummy.com', res.body)
+        self.assertIn('capitaltesting@dummy.com', res.unicode_body)
 
     def testUsernameAlreadyThere(self):
         """Signup requires an unique username entry."""
@@ -144,7 +144,7 @@ class TestOpenSignup(TestViewBase):
                 'code': user.activation.code,
                 'new_username': 'admin',
             })
-        self.assertIn('Username already', res.body)
+        self.assertIn('Username already', res.unicode_body)
 
     def testResetFormDisplay(self):
         """Make sure you can GET the reset form."""
@@ -162,7 +162,7 @@ class TestOpenSignup(TestViewBase):
         ))
 
         res = self.app.get(url)
-        self.assertIn('Activate', res.body)
+        self.assertIn('Activate', res.unicode_body)
 
     def testUsernameIsLowercase(self):
         """Signup saves username as all lowercase"""

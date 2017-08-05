@@ -24,7 +24,7 @@ class BookiePopularAPITest(unittest.TestCase):
 
     def setUp(self):
         from pyramid.paster import get_app
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -92,7 +92,7 @@ class BookiePopularAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        bmarks = json.loads(res.body)['bmarks']
+        bmarks = json.loads(res.unicode_body)['bmarks']
 
         self.assertEqual(
             len(bmarks),
@@ -139,7 +139,7 @@ class BookiePopularAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        bmarks = json.loads(res.body)['bmarks']
+        bmarks = json.loads(res.unicode_body)['bmarks']
 
         self.assertEqual(
             len(bmarks),

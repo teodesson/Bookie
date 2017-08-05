@@ -36,7 +36,7 @@ class BookieAPITest(unittest.TestCase):
 
     def setUp(self):
         from pyramid.paster import get_app
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -207,14 +207,14 @@ class BookieAPITest(unittest.TestCase):
                                 status=200)
 
         self.assertTrue(
-            '"location":' in res.body,
-            "Should have a location result: " + res.body)
+            '"location":' in res.unicode_body,
+            "Should have a location result: " + res.unicode_body)
         self.assertTrue(
-            'description": "Bookie"' in res.body,
-            "Should have Bookie in description: " + res.body)
+            'description": "Bookie"' in res.unicode_body,
+            "Should have Bookie in description: " + res.unicode_body)
         self.assertTrue(
-            '"is_private": false' in res.body,
-            "Should have is_private as false: " + res.body)
+            '"is_private": false' in res.unicode_body,
+            "Should have is_private as false: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_add_private_bookmark(self):
@@ -241,14 +241,14 @@ class BookieAPITest(unittest.TestCase):
                                 status=200)
 
         self.assertTrue(
-            '"location":' in res.body,
-            "Should have a location result: " + res.body)
+            '"location":' in res.unicode_body,
+            "Should have a location result: " + res.unicode_body)
         self.assertTrue(
-            'description": "Bookie"' in res.body,
-            "Should have Bookie in description: " + res.body)
+            'description": "Bookie"' in res.unicode_body,
+            "Should have Bookie in description: " + res.unicode_body)
         self.assertTrue(
-            '"is_private": true' in res.body,
-            "Should have is_private as true: " + res.body)
+            '"is_private": true' in res.unicode_body,
+            "Should have is_private as true: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_add_bookmark_empty_body(self):
@@ -262,7 +262,7 @@ class BookieAPITest(unittest.TestCase):
             params={},
             status=400)
 
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertTrue('error' in data)
         self.assertEqual(data['error'], 'Bad Request: No url provided')
 
@@ -282,7 +282,7 @@ class BookieAPITest(unittest.TestCase):
             params=json.dumps(params),
             status=400)
 
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertTrue('error' in data)
         self.assertEqual(data['error'], 'Bad Request: No url provided')
 
@@ -295,7 +295,7 @@ class BookieAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        bmark = json.loads(res.body)['bmark']
+        bmark = json.loads(res.unicode_body)['bmark']
         self.assertEqual(
             GOOGLE_HASH,
             bmark['hash_id'],
@@ -326,7 +326,7 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         # make sure we can decode the body
-        bmark = json.loads(res.body)['bmark']
+        bmark = json.loads(res.unicode_body)['bmark']
 
         self.assertTrue(
             'readable' in bmark,
@@ -351,7 +351,7 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         # make sure we can decode the body
-        bmark = json.loads(res.body)
+        bmark = json.loads(res.unicode_body)
         self.assertIn('tag_suggestions', bmark)
         self.assertIn('search', bmark['tag_suggestions'])
         self._check_cors_headers(res)
@@ -368,7 +368,7 @@ class BookieAPITest(unittest.TestCase):
             status=404)
 
         # make sure we can decode the body
-        bmark = json.loads(res.body)
+        bmark = json.loads(res.unicode_body)
         self.assertIn('tag_suggestions', bmark)
         self.assertIn('search', bmark['tag_suggestions'])
         self._check_cors_headers(res)
@@ -414,13 +414,13 @@ class BookieAPITest(unittest.TestCase):
                                 params=edit_bmark,
                                 status=200)
         # pure numbers are eliminated
-        self.assertNotIn('2014', res.body)
+        self.assertNotIn('2014', res.unicode_body)
         # tags with length less than 3 are omitted
-        self.assertNotIn('NS', res.body)
+        self.assertNotIn('NS', res.unicode_body)
         # all tags are lower cased
-        self.assertNotIn('NEW', res.body)
+        self.assertNotIn('NEW', res.unicode_body)
         for tag in tags_expected:
-            self.assertIn(tag, res.body)
+            self.assertIn(tag, res.unicode_body)
 
     def test_suggested_tags_for_unparsed_bookmark(self):
         """Suggested tags for a bookmarked page whose readable is None"""
@@ -548,8 +548,8 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         self.assertTrue(
-            'message": "done"' in res.body,
-            "Should have a message of done: " + res.body)
+            'message": "done"' in res.unicode_body,
+            "Should have a message of done: " + res.unicode_body)
 
         # we're going to cheat like mad, use the sync call to get the hash_ids
         # of bookmarks in the system and verify that only the bmark.us hash_id
@@ -559,11 +559,11 @@ class BookieAPITest(unittest.TestCase):
                                status=200)
 
         self.assertTrue(
-            GOOGLE_HASH not in res.body,
-            "Should not have the google hash: " + res.body)
+            GOOGLE_HASH not in res.unicode_body,
+            "Should not have the google hash: " + res.unicode_body)
         self.assertTrue(
-            BMARKUS_HASH in res.body,
-            "Should have the bmark.us hash: " + res.body)
+            BMARKUS_HASH in res.unicode_body,
+            "Should have the bmark.us hash: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_bookmark_recent_same_user(self):
@@ -573,8 +573,8 @@ class BookieAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        first_bmark = json.loads(res.body)['bmarks'][0]
-        second_bmark = json.loads(res.body)['bmarks'][1]
+        first_bmark = json.loads(res.unicode_body)['bmarks'][0]
+        second_bmark = json.loads(res.unicode_body)['bmarks'][1]
         self.assertEqual(
             BMARKUS_HASH,
             first_bmark['hash_id'],
@@ -612,7 +612,7 @@ class BookieAPITest(unittest.TestCase):
         # make sure we can decode the body
         # @todo this is out because of the issue noted in the code. We'll
         # clean this up at some point.
-        # bmark = json.loads(res.body)['bmarks'][0]
+        # bmark = json.loads(res.unicode_body)['bmarks'][0]
         # self.assertTrue('here dude' in bmark[u'readable']['content'],
         #     "There should be content: " + str(bmark))
 
@@ -625,7 +625,7 @@ class BookieAPITest(unittest.TestCase):
                                status=200)
 
         # Make sure we can decode the body.
-        bmark = json.loads(res.body)['bmarks'][1]
+        bmark = json.loads(res.unicode_body)['bmarks'][1]
         self.assertEqual(
             GOOGLE_HASH,
             bmark['hash_id'],
@@ -653,7 +653,7 @@ class BookieAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        bmark = json.loads(res.body)['bmarks'][0]
+        bmark = json.loads(res.unicode_body)['bmarks'][0]
         self.assertEqual(
             GOOGLE_HASH,
             bmark['hash_id'],
@@ -676,7 +676,7 @@ class BookieAPITest(unittest.TestCase):
         # make sure we can decode the body
         # @todo this is out because of the issue noted in the code. We'll
         # clean this up at some point.
-        # bmark = json.loads(res.body)['bmarks'][0]
+        # bmark = json.loads(res.unicode_body)['bmarks'][0]
         # self.assertTrue('here dude' in bmark[u'readable']['content'],
         #     "There should be content: " + str(bmark))
 
@@ -694,11 +694,11 @@ class BookieAPITest(unittest.TestCase):
             msg='Get status is 200, ' + res.status)
 
         self.assertTrue(
-            GOOGLE_HASH in res.body,
-            "The google hash id should be in the json: " + res.body)
+            GOOGLE_HASH in res.unicode_body,
+            "The google hash id should be in the json: " + res.unicode_body)
         self.assertTrue(
-            BMARKUS_HASH in res.body,
-            "The bmark.us hash id should be in the json: " + res.body)
+            BMARKUS_HASH in res.unicode_body,
+            "The bmark.us hash id should be in the json: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_search_api(self):
@@ -708,7 +708,7 @@ class BookieAPITest(unittest.TestCase):
         res = self.testapp.get('/api/v1/bmarks/search/google', status=200)
 
         # make sure we can decode the body
-        bmark_list = json.loads(res.body)
+        bmark_list = json.loads(res.unicode_body)
         results = bmark_list['search_results']
         self.assertEqual(
             len(results),
@@ -746,7 +746,7 @@ class BookieAPITest(unittest.TestCase):
         )
 
         # Make sure we can decode the body.
-        bmark_list = json.loads(res.body)
+        bmark_list = json.loads(res.unicode_body)
         results = bmark_list['search_results']
         self.assertEqual(
             len(results),
@@ -777,7 +777,7 @@ class BookieAPITest(unittest.TestCase):
         )
 
         # Make sure we can decode the body.
-        bmark_list = json.loads(res.body)
+        bmark_list = json.loads(res.unicode_body)
         results = bmark_list['search_results']
         self.assertEqual(
             len(results),
@@ -808,7 +808,7 @@ class BookieAPITest(unittest.TestCase):
         )
 
         # Make sure we can decode the body.
-        bmark_list = json.loads(res.body)
+        bmark_list = json.loads(res.unicode_body)
         results = bmark_list['search_results']
         self.assertEqual(
             len(results),
@@ -834,7 +834,7 @@ class BookieAPITest(unittest.TestCase):
             status=404
         )
         # make sure we can decode the body
-        bmark_list = json.loads(res.body)
+        bmark_list = json.loads(res.unicode_body)
 
         self.assertTrue(
             'error' in bmark_list,
@@ -863,8 +863,8 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         self.assertTrue(
-            'python' in res.body,
-            "Should have python as a tag completion: " + res.body)
+            'python' in res.unicode_body,
+            "Should have python as a tag completion: " + res.unicode_body)
 
         # we shouldn't get python as an option if we supply bookmarks as the
         # current tag. No bookmarks have both bookmarks & python as tags
@@ -878,8 +878,8 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         self.assertTrue(
-            'python' not in res.body,
-            "Should not have python as a tag completion: " + res.body)
+            'python' not in res.unicode_body,
+            "Should not have python as a tag completion: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_bookmark_tag_complete_same_user_accounts_for_privacy(self):
@@ -895,8 +895,8 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         self.assertTrue(
-            'python' in res.body,
-            "Should have python as a tag completion: " + res.body)
+            'python' in res.unicode_body,
+            "Should have python as a tag completion: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_bookmark_tag_complete_anon_user(self):
@@ -912,8 +912,8 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         self.assertTrue(
-            'python' in res.body,
-            "Should have python as a tag completion: " + res.body)
+            'python' in res.unicode_body,
+            "Should have python as a tag completion: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_bookmark_tag_complete_anon_user_accounts_for_privacy(self):
@@ -929,8 +929,8 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         self.assertTrue(
-            'python' not in res.body,
-            "Should not have python as a tag completion: " + res.body)
+            'python' not in res.unicode_body,
+            "Should not have python as a tag completion: " + res.unicode_body)
         self._check_cors_headers(res)
 
     def test_bookmark_tag_complete_unauthorized_access(self):
@@ -951,7 +951,7 @@ class BookieAPITest(unittest.TestCase):
                                params={'api_key': API_KEY,
                                        'start_date': '2013-11-16'},
                                status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         count = data['count'][0]
         self.assertEqual(
             count['attrib'], test_dates[0][0])
@@ -974,7 +974,7 @@ class BookieAPITest(unittest.TestCase):
                                        'start_date': '2013-11-14',
                                        'end_date': '2013-11-16'},
                                status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         count = data['count'][0]
         self.assertEqual(
             count['attrib'], test_dates[1][0])
@@ -996,7 +996,7 @@ class BookieAPITest(unittest.TestCase):
                                params={'api_key': API_KEY,
                                        'end_date': '2013-12-29'},
                                status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         count = data['count'][0]
         self.assertEqual(
             count['attrib'], test_dates[2][0])
@@ -1018,7 +1018,7 @@ class BookieAPITest(unittest.TestCase):
                                params={'api_key': API_KEY,
                                        'start_date': '2013-11-1'},
                                status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         count = data['count']
         self.assertEqual(
             count[0]['attrib'], test_dates[1][0])
@@ -1049,7 +1049,7 @@ class BookieAPITest(unittest.TestCase):
                                status=200)
 
         # make sure we can decode the body
-        user = json.loads(res.body)
+        user = json.loads(res.unicode_body)
 
         self.assertEqual(
             user['username'], 'admin',
@@ -1078,7 +1078,7 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         # make sure we can decode the body
-        user = json.loads(res.body)
+        user = json.loads(res.unicode_body)
 
         self.assertEqual(
             user['username'], 'admin',
@@ -1105,7 +1105,7 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         # make sure we can decode the body
-        user = json.loads(res.body)
+        user = json.loads(res.unicode_body)
 
         self.assertEqual(
             user['username'], 'admin',
@@ -1140,7 +1140,7 @@ class BookieAPITest(unittest.TestCase):
         new_apikey = fetch_api['api_key']
 
         # make sure we can decode the body
-        response = json.loads(res.body)
+        response = json.loads(res.unicode_body)
 
         # old and new api keys must not be the same
         self.assertNotEqual(
@@ -1170,7 +1170,7 @@ class BookieAPITest(unittest.TestCase):
             status=200)
 
         # make sure we can decode the body
-        user = json.loads(res.body)
+        user = json.loads(res.unicode_body)
 
         self.assertEqual(
             user['username'], 'admin',
@@ -1203,7 +1203,7 @@ class BookieAPITest(unittest.TestCase):
             status=403)
 
         # make sure we can decode the body
-        user = json.loads(res.body)
+        user = json.loads(res.unicode_body)
 
         self.assertEqual(
             user['username'], 'admin',
@@ -1220,7 +1220,7 @@ class BookieAPITest(unittest.TestCase):
         """We should be able to ping and make sure we auth'd and are ok"""
         res = self.testapp.get('/api/v1/admin/ping?api_key=' + API_KEY,
                                status=200)
-        ping = json.loads(res.body)
+        ping = json.loads(res.unicode_body)
 
         self.assertTrue(ping['success'])
 
@@ -1242,7 +1242,7 @@ class BookieAPITest(unittest.TestCase):
 
         res = self.testapp.get('/api/v1/admin/ping?api_key=' + 'invalid',
                                status=200)
-        ping = json.loads(res.body)
+        ping = json.loads(res.unicode_body)
 
         self.assertFalse(ping['success'])
         self.assertEqual(ping['message'], "API key is invalid.")
@@ -1252,7 +1252,7 @@ class BookieAPITest(unittest.TestCase):
         """If you don't supply a username, you've failed the ping"""
         res = self.testapp.get('/api/v1/ping?api_key=' + API_KEY,
                                status=200)
-        ping = json.loads(res.body)
+        ping = json.loads(res.unicode_body)
 
         self.assertTrue(not ping['success'])
         self.assertEqual(ping['message'], "Missing username in your api url.")
@@ -1262,7 +1262,7 @@ class BookieAPITest(unittest.TestCase):
         """If you don't supply a username, you've failed the ping"""
         res = self.testapp.get('/ping?api_key=' + API_KEY,
                                status=200)
-        ping = json.loads(res.body)
+        ping = json.loads(res.unicode_body)
 
         self.assertTrue(not ping['success'])
         self.assertEqual(ping['message'], "The API url should be /api/v1")
@@ -1272,7 +1272,7 @@ class BookieAPITest(unittest.TestCase):
         """Test the bookmark stats"""
         res = self.testapp.get('/api/v1/stats/bookmarks',
                                status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertTrue(
             'count' in data,
             "Should have bookmark count: " + str(data))
@@ -1284,7 +1284,7 @@ class BookieAPITest(unittest.TestCase):
         """Test the user stats"""
         res = self.testapp.get('/api/v1/stats/users',
                                status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertTrue(
             'count' in data,
             "Should have user count: " + str(data))
@@ -1312,7 +1312,7 @@ class BookieAPITest(unittest.TestCase):
                 '/api/v1/admin/bmarks/{0}?&api_key={1}'.format(
                     word, API_KEY),
                 status=200)
-            data = json.loads(res.body)
+            data = json.loads(res.unicode_body)
 
             self.assertTrue(
                 data['count'] > 0,

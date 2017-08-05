@@ -335,7 +335,7 @@ class User(Base):
         """Return safe data to be sharing around"""
         hide = ['_password', 'password', 'is_admin', 'api_key']
         return dict(
-            [(k, v) for k, v in dict(self).iteritems() if k not in hide]
+            [(k, v) for k, v in dict(self).items() if k not in hide]
         )
 
     def deactivate(self):

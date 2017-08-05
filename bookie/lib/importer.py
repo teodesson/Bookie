@@ -154,7 +154,7 @@ class DelImporter(Importer):
         """
         delicious_doctype = 'DOCTYPE NETSCAPE-Bookmark-file-1'
 
-        soup = BeautifulSoup(file_io)
+        soup = BeautifulSoup(file_io, 'html.parser')
         can_handle = False
         can_handle = DelImporter._is_delicious_format(soup,
                                                       can_handle,
@@ -166,7 +166,7 @@ class DelImporter(Importer):
 
     def process(self):
         """Given a file, process it"""
-        soup = BeautifulSoup(self.file_handle)
+        soup = BeautifulSoup(self.file_handle, 'html.parser')
         htmlParser = HTMLParser()
         count = 0
 
@@ -354,7 +354,7 @@ class GBookmarkImporter(Importer):
         if (file_io.closed):
             file_io = open(file_io.name)
         file_io.seek(0)
-        soup = BeautifulSoup(file_io)
+        soup = BeautifulSoup(file_io, 'html.parser')
         can_handle = False
         gbookmark_doctype = "DOCTYPE NETSCAPE-Bookmark-file-1"
         can_handle = GBookmarkImporter._is_google_format(soup,
@@ -374,7 +374,7 @@ class GBookmarkImporter(Importer):
         count = 0
         if (self.file_handle.closed):
             self.file_handle = open(self.file_handle.name)
-        soup = BeautifulSoup(self.file_handle)
+        soup = BeautifulSoup(self.file_handle, 'html.parser')
         if not soup.contents[0] == "DOCTYPE NETSCAPE-Bookmark-file-1":
             raise Exception("File is not a google bookmarks file")
 

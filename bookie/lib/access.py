@@ -206,6 +206,18 @@ class api_auth():
             request.user = user
             return True
 
+    def is_json_auth_request(self, request):
+        # if hasattr(request, 'json_body'):
+        #     if self.api_field in request.json_body:
+        #         return True
+        # return False
+        try:
+            if self.api_field in request.json_body:
+                return True
+        except Exception as exc:
+            LOG.error(exc)
+        return False
+
     def wrap_action(self, action_, *args, **kwargs):
         """
         Wrap the controller action ``action_``.
@@ -243,13 +255,8 @@ class api_auth():
             api_key = request.params.get(self.api_field, None)
             username = request.params.get('username', username)
 
-        def is_json_auth_request(request):
-            if hasattr(request, 'json_body'):
-                if self.api_field in request.json_body:
-                    return True
-            return False
-
-        if is_json_auth_request(request):
+        # print(request.json_body)
+        if self.is_json_auth_request(request):
             # we've got a ajax request with post data
             api_key = request.json_body.get(self.api_field, None)
             username = request.json_body.get('username', None)

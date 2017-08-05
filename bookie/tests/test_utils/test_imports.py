@@ -549,7 +549,7 @@ class ImportViews(TestViewBase):
         # verify we get the form
         res = self.app.get('/admin/import')
         self.assertTrue(
-            '<form' in res.body,
+            '<form' in res.unicode_body,
             'Should have a form in the body for submitting the upload')
 
         res = self._upload()
@@ -606,13 +606,13 @@ class ImportViews(TestViewBase):
         # message about our import
         res = self.app.get('/admin/import')
 
-        self.assertTrue('<form' not in res.body, "We shouldn't have a form")
+        self.assertTrue('<form' not in res.unicode_body, "We shouldn't have a form")
         self.assertTrue(
-            'waiting in the queue' in res.body,
+            'waiting in the queue' in res.unicode_body,
             "We want to display a waiting message.")
         self.assertTrue(
-            '2 other imports' in res.body,
-            "We want to display a count message." + res.body)
+            '2 other imports' in res.unicode_body,
+            "We want to display a count message." + res.unicode_body)
 
     def test_completed_dont_count(self):
         """Once completed, we should get the form again"""
@@ -632,7 +632,7 @@ class ImportViews(TestViewBase):
         # message about our import
         res = self.app.get('/admin/import')
 
-        self.assertTrue('<form' in res.body, "We should have a form")
+        self.assertTrue('<form' in res.unicode_body, "We should have a form")
 
     def test_empty_upload(self):
         """Verify if error message is shown if no file is tried to upload"""
@@ -644,5 +644,5 @@ class ImportViews(TestViewBase):
             upload_files=[],
         )
         self.assertTrue(
-            'Please provide a file to import' in res.body,
+            'Please provide a file to import' in res.unicode_body,
             "Error message should be present")

@@ -16,7 +16,6 @@ from bookie.models import (
     BmarkMgr,
     DBSession,
     InvalidBookmark,
-    NoResultFound,
     TagMgr,
 )
 from bookie.views import api
@@ -210,7 +209,8 @@ def edit_error(request):
                     bmark = BmarkMgr.get_by_url(
                         post['url'],
                         username=request.user.username)
-                except NoResultFound:
+                except Exception as exc:
+                    LOG.error(exc)
                     bmark = None
                 if bmark:
                     return {

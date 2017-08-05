@@ -9,9 +9,10 @@ from pyramid.security import forget
 from pyramid.url import route_url
 from pyramid.view import view_config
 
+from sqlalchemy.exc import IntegrityError
+
 from bookie.bcelery import tasks
 from bookie.lib.applog import AuthLog
-from bookie.models import IntegrityError
 from bookie.models.auth import (
     UserMgr,
     User,

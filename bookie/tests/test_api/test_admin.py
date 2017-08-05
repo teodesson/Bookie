@@ -31,7 +31,7 @@ class AdminApiTest(unittest.TestCase):
 
     def setUp(self):
         from pyramid.paster import get_app
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -62,7 +62,7 @@ class AdminApiTest(unittest.TestCase):
                                params=params,
                                status=200)
         # by default we shouldn't have any inactive users
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         users = [u for u in data['users']]
         for u in users:
             self.assertEqual(0, u['invite_ct'], "Count should be 0 to start.")
@@ -76,7 +76,7 @@ class AdminApiTest(unittest.TestCase):
                                params=params,
                                status=200)
         # By default, we should not have any non activated accounts.
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertEqual(True, data['status'], "Status should be True")
         self.assertEqual(0, len(data['data']), "Count should be 0 to start.")
 
@@ -86,7 +86,7 @@ class AdminApiTest(unittest.TestCase):
             '/api/v1/a/nonactivated?api_key={0}'.format(
                 self.api_key),
             status=200)
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertEqual(True, data['status'], "Status should be True")
         self.assertEqual('Removed non activated accounts', data['message'])
 
@@ -100,7 +100,7 @@ class AdminApiTest(unittest.TestCase):
                                params=params,
                                status=200)
         # we should get back tuples of username/count
-        data = json.loads(res.body)['users']
+        data = json.loads(res.unicode_body)['users']
         found = False
         invite_count = None
         for user, count in data:
@@ -108,11 +108,12 @@ class AdminApiTest(unittest.TestCase):
                 found = True
                 invite_count = count
 
-        self.assertTrue(found, "There should be the admin user." + res.body)
+        self.assertTrue(found, 
+                        "There should be the admin user." + res.unicode_body)
         self.assertEqual(
             0,
             invite_count,
-            "The admin user shouldn't have any invites." + res.body)
+            "The admin user shouldn't have any invites." + res.unicode_body)
 
     def test_set_invite_ct(self):
         """Test we can set the invite count for the user"""
@@ -124,15 +125,15 @@ class AdminApiTest(unittest.TestCase):
                                 params=params,
                                 status=200)
         # we should get back tuples of username/count
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
         self.assertEqual(
             'admin',
             data.get('username'),
-            "The admin user data is returned to us." + res.body)
+            "The admin user data is returned to us." + res.unicode_body)
         self.assertEqual(
             10,
             int(data.get('invite_ct')),
-            "The admin user now has 10 invites." + res.body)
+            "The admin user now has 10 invites." + res.unicode_body)
 
         # and of course when we're done we need to unset it back to 0 or else
         # the test above blows up...sigh.
@@ -151,19 +152,20 @@ class AdminApiTest(unittest.TestCase):
                                status=200)
 
         # we should get back tuples of username/count
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
 
         self.assertEqual(
-            1, data.get('count'), "There are none by default. " + res.body)
+            1, data.get('count'),
+            "There are none by default. " + res.unicode_body)
 
         self.assertEqual(
             'admin',
             data.get('imports')[0]['username'],
-            "The first import is from admin " + res.body)
+            "The first import is from admin " + res.unicode_body)
         self.assertEqual(
             0,
             data.get('imports')[0]['status'],
-            "And it has a status of 0 " + res.body)
+            "And it has a status of 0 " + res.unicode_body)
 
     def test_user_list(self):
         """Test that we can hit the api and get the list of users."""
@@ -176,18 +178,19 @@ class AdminApiTest(unittest.TestCase):
                                status=200)
 
         # we should get back dict of count, users.
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
 
         self.assertEqual(
-            1, data.get('count'), "There are none by default. " + res.body)
+            1, data.get('count'),
+            "There are none by default. " + res.unicode_body)
         self.assertEqual(
             'admin',
             data.get('users')[0]['username'],
-            "The first user is from admin " + res.body)
+            "The first user is from admin " + res.unicode_body)
         self.assertEqual(
             'testing@dummy.com',
             data.get('users')[0]['email'],
-            "The first user is from testing@dummy.com " + res.body)
+            "The first user is from testing@dummy.com " + res.unicode_body)
 
     def test_user_delete(self):
         """Verify we can remove a user and their bookmarks via api."""
@@ -204,7 +207,7 @@ class AdminApiTest(unittest.TestCase):
             )
 
         # we should get back dict of count, users.
-        data = json.loads(res.body)
+        data = json.loads(res.unicode_body)
 
         self.assertTrue(data.get('success'))
 

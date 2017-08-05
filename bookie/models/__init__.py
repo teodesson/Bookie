@@ -29,8 +29,6 @@ from sqlalchemy.orm import relation
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Query
-from sqlalchemy.exc import IntegrityError   # noqa
-from sqlalchemy.orm.exc import NoResultFound  # noqa
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.sql import func
@@ -270,8 +268,8 @@ class TagMgr(object):
                 # Remove unicode character while printing
                 clean_content = (
                     "".join(
-                        BeautifulSoup(content).findAll(text=True)).encode(
-                        'ascii', 'ignore'))
+                        BeautifulSoup(content, 'html.parser').findAll(
+                            text=True)).encode('ascii', 'ignore'))
                 get_tags = extract.TermExtractor()
                 tag_suggest = get_tags(clean_content)
                 tag_suggest = sorted(tag_suggest, key=lambda tag_suggest:

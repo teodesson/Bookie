@@ -14,7 +14,7 @@ class TestAuthWeb(TestCase):
     def setUp(self):
         from pyramid.paster import get_app
         from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'bookie')
+        app = get_app(BOOKIE_TEST_INI, 'main')
         from webtest import TestApp
         self.testapp = TestApp(app)
         testing.setUp()
@@ -31,13 +31,13 @@ class TestAuthWeb(TestCase):
         form_str = 'name="login"'
 
         self.assertTrue(
-            body_str in res.body,
-            msg="Request should contain Log In: " + res.body)
+            body_str in res.unicode_body,
+            msg="Request should contain Log In: " + res.unicode_body)
 
         # There should be a login form on there.
         self.assertTrue(
-            form_str in res.body,
-            msg="The login input should be visible in the body:" + res.body)
+            form_str in res.unicode_body,
+            msg="The login input should be visible in the body:" + res.unicode_body)
 
     def test_login_success(self):
         """Verify a good login"""
