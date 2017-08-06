@@ -36,8 +36,8 @@ class BookiePopularAPITest(unittest.TestCase):
 
     def tearDown(self):
         """We need to empty the bmarks table on each run"""
-        testing.tearDown()
         empty_db()
+        testing.tearDown()
 
     def _check_cors_headers(self, res):
         """ Make sure that the request has proper CORS headers."""

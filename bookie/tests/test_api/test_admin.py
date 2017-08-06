@@ -38,8 +38,8 @@ class AdminApiTest(unittest.TestCase):
 
     def tearDown(self):
         """We need to empty the bmarks table on each run"""
-        testing.tearDown()
         empty_db()
+        testing.tearDown()
 
     def _add_demo_import(self):
         """DB Needs some imports to be able to query."""

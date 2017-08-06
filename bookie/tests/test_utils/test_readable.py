@@ -126,8 +126,8 @@ class TestReadableFulltext(TestCase):
 
     def tearDown(self):
         """Tear down each test"""
-        testing.tearDown()
         empty_db()
+        testing.tearDown()
 
     def _get_good_request(self):
         """Return the basics for a good add bookmark request"""

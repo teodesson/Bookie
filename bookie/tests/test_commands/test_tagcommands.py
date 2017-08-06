@@ -1,12 +1,11 @@
 """Test the tag commands system"""
-from unittest import TestCase
 from bookie.lib.tagcommands import COMMANDLIST
 from bookie.lib.tagcommands import Commander
 from bookie.lib.tagcommands import IsRead
 from bookie.lib.tagcommands import ToRead
 from bookie.models import DBSession
 
-from bookie.tests import empty_db
+from bookie.tests import BaseTestCase
 
 
 # tags act as a dict on the Bmark object, so we're just mocking things
@@ -24,10 +23,31 @@ class CommandMock(object):
         return bmark
 
 
-class TestTagCommander(TestCase):
+class BaseTestTagCommander(BaseTestCase):
     """Commander system"""
 
     def setUp(self):
+        super(BaseTestTagCommander, self).setUp()
+        """Store off the commands so we can return them"""
+        self.saved_commandlist = COMMANDLIST
+        # for key in COMMANDLIST.keys():
+        #     del(COMMANDLIST[key])
+        COMMANDLIST.clear()
+        DBSession.execute("INSERT INTO tags (name) VALUES ('toread')")
+
+    def tearDown(self):
+        """Make sure we clear the commands we put in there"""
+        for key in self.saved_commandlist:
+            COMMANDLIST[key] = self.saved_commandlist[key]
+        super(BaseTestTagCommander, self).tearDown()
+
+
+class TestTagCommander(BaseTestTagCommander):
+    """Commander system"""
+
+    '''
+    def setUp(self):
+        super(TestTagCommander, self).setUp()
         """Store off the commands so we can return them"""
         self.saved_commandlist = COMMANDLIST
         for key in COMMANDLIST.keys():
@@ -38,7 +58,8 @@ class TestTagCommander(TestCase):
         """Make sure we clear the commands we put in there"""
         for key in self.saved_commandlist:
             COMMANDLIST[key] = self.saved_commandlist[key]
-        empty_db()
+        super(TestTagCommander, self).tearDown()
+    '''
 
     def test_command_finds_commands(self):
         """Verify we find commands that we know about"""
@@ -68,9 +89,9 @@ class TestTagCommander(TestCase):
             "Our commander should find !toread command to run")
 
 
-class TestToRead(TestCase):
+class TestToRead(BaseTestTagCommander):
     """Test the ToRead Command"""
-
+    '''
     def setUp(self):
         """Store off the commands so we can return them"""
         self.saved_commandlist = COMMANDLIST
@@ -83,6 +104,7 @@ class TestToRead(TestCase):
         for key in self.saved_commandlist:
             COMMANDLIST[key] = self.saved_commandlist[key]
         empty_db()
+    '''
 
     def test_toread_command(self):
         """If marked toread, then should end up with tag 'toread' on it"""
@@ -109,19 +131,21 @@ class TestToRead(TestCase):
             "Should not have the !toread tag in the updated bookmark")
 
 
-class TestIsRead(TestCase):
+class TestIsRead(BaseTestTagCommander):
     """Test the IsRead Command"""
-
+    '''
     def setUp(self):
         """Store off the commands so we can return them"""
         self.saved_commandlist = COMMANDLIST
-        for key in COMMANDLIST.keys():
-            del(COMMANDLIST[key])
+        # for key in COMMANDLIST.keys():
+        #     del(COMMANDLIST[key])
+        COMMANDLIST.clear()
 
     def tearDown(self):
         """Make sure we clear the commands we put in there"""
         for key in self.saved_commandlist:
             COMMANDLIST[key] = self.saved_commandlist[key]
+    '''
 
     def test_isread_command(self):
         """Should remove the toread tag on a bookmark"""

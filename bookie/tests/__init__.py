@@ -67,6 +67,22 @@ def gen_random_word(wordLen):
     return word
 
 
+class BaseTestCase(unittest.TestCase):
+    def setUp(self):
+        """Setup Tests"""
+        from pyramid.paster import get_app
+        from bookie.tests import BOOKIE_TEST_INI
+        app = get_app(BOOKIE_TEST_INI, 'main')
+        from webtest import TestApp
+        self.app = TestApp(app)
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        """Tear down each test"""
+        empty_db()
+        testing.tearDown()
+
+
 class TestDBBase(unittest.TestCase):
     def setUp(self):
         """Setup Tests"""
@@ -76,32 +92,29 @@ class TestDBBase(unittest.TestCase):
 
     def tearDown(self):
         """Tear down each test"""
-        testing.tearDown()
         self.trans.abort()
+        testing.tearDown()
 
 
-class TestViewBase(unittest.TestCase):
+class TestViewBase(BaseTestCase):
     """In setup, bootstrap the app and make sure we clean up after ourselves
 
     """
     def setUp(self):
         """Setup Tests"""
-        from pyramid.paster import get_app
-        from bookie.tests import BOOKIE_TEST_INI
-        app = get_app(BOOKIE_TEST_INI, 'main')
-        from webtest import TestApp
-        self.app = TestApp(app)
-        self.config = testing.setUp()
+        super(TestViewBase, self).setUp()
         self.config.include('pyramid_mako')
         res = DBSession.execute(
             "SELECT api_key FROM users WHERE username = 'admin'").\
             fetchone()
         self.api_key = res['api_key']
 
+    '''
     def tearDown(self):
         """Tear down each test"""
-        testing.tearDown()
         empty_db()
+        testing.tearDown()
+    '''
 
     def _login_admin(self):
         """Make the login call to the app"""
@@ -133,6 +146,10 @@ def empty_db():
     # Delete the users not admin in the system.
     Activation.query.delete()
     User.query.filter(User.username != 'admin').delete()
+    # update admin
+    admin = User.query.filter(User.username == 'admin').first()
+    admin.password = 'admin'
+    DBSession.merge(admin)
 
     AppLog.query.delete()
     DBSession.flush()

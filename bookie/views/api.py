@@ -793,9 +793,12 @@ def suspend_acct(request):
     # we need to get the user from the email
     email = params.get('email', None)
 
-    if email is None and hasattr(request, 'json_body'):
+    if email is None:  # and hasattr(request, 'json_body'):
         # try the json body
-        email = request.json_body.get('email', None)
+        try:
+            email = request.json_body.get('email', None)
+        except Exception as exc:
+            LOG.error(exc)
 
     if user is None and email is None:
         request.response.status_int = 406
@@ -1255,7 +1258,7 @@ def admin_bmark_remove(request):
     try:
         bmark = BmarkMgr.get_by_hash(hash_id,
                                      username=username)
-        print(bmark)
+        # print(bmark)
         if bmark:
             DBSession.delete(bmark)
             return _api_response(request, {

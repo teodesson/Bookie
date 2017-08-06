@@ -311,6 +311,16 @@ class User(Base):
     password = synonym('_password', descriptor=property(_get_password,
                                                         _set_password))
 
+    def __str__(self):
+        return "<User(id={0}, username={1}, name={2}, email={3}," \
+               " password={4}," \
+               " activated={5}," \
+               " is_admin={6})>".\
+            format(self.id, self.username, self.name, self.email,
+                   self._get_password(),
+                   'Y' if self.activated else 'N',
+                   'Y' if self.is_admin else 'N')
+
     def validate_password(self, password):
         """
         Check the password against existing credentials.
@@ -326,8 +336,11 @@ class User(Base):
         # logging in via ldap. We check for that here and return them as an
         # incorrect login
         if self.password:
+            # print(self.password)
             salt = self.password[:29]
-            return self.password == bcrypt.hashpw(password, salt)
+            hsh = bcrypt.hashpw(password, salt)
+            # print(hsh)
+            return self.password == hsh
         else:
             return False
 

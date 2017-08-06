@@ -1,6 +1,5 @@
 """Test the Auth model setup"""
 from unittest import TestCase
-from pyramid import testing
 
 from datetime import (
     datetime,
@@ -12,7 +11,6 @@ from bookie.models.auth import Activation
 from bookie.models.auth import User
 from bookie.models.auth import UserMgr
 
-from bookie.tests import empty_db
 from bookie.tests import gen_random_word
 from bookie.tests import TestDBBase
 
@@ -57,6 +55,7 @@ class TestAuthUser(TestCase):
 
 
 class TestAuthUserDB(TestDBBase):
+    '''
     def setUp(self):
         """Setup Tests"""
         from pyramid.paster import get_app
@@ -70,6 +69,7 @@ class TestAuthUserDB(TestDBBase):
         """Tear down each test"""
         testing.tearDown()
         empty_db()
+    '''
 
     def test_activation_delete(self):
         """Make sure removing an activation does not remove a user."""

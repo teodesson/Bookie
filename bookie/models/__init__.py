@@ -248,7 +248,7 @@ class TagMgr(object):
             that the user is editing. New Bookmarks won't end up here.
 
         """
-        tag_suggest = []
+        # tag_suggest = []
         tag_list = []
 
         #  If url is None return empty tags
@@ -270,6 +270,7 @@ class TagMgr(object):
                     "".join(
                         BeautifulSoup(content, 'html.parser').findAll(
                             text=True)).encode('ascii', 'ignore'))
+                # print(clean_content)
                 get_tags = extract.TermExtractor()
                 tag_suggest = get_tags(clean_content)
                 tag_suggest = sorted(tag_suggest, key=lambda tag_suggest:
@@ -328,7 +329,8 @@ class Readable(Base):
 def sync_readable_content(mapper, connection, target):
     def _clean_content(content):
         if content:
-            return ' '.join(BeautifulSoup(content).findAll(text=True))
+            return ' '.join(BeautifulSoup(
+                content, 'html.parser').findAll(text=True))
         else:
             return ""
 
@@ -492,7 +494,7 @@ class BmarkMgr(object):
             qry = qry.outerjoin(Bmark.readable).\
                 options(contains_eager(Bmark.readable))
 
-        qry = qry.options(joinedload('hashed'))
+        # qry = qry.options(joinedload('hashed'))
         return qry.order_by(order_by).all()
 
     @staticmethod

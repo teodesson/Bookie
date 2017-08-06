@@ -54,6 +54,8 @@ def login(request):
         LOG.debug(auth)
         LOG.debug(UserMgr.get_list())
 
+        # print(auth)
+        # print(password)
         if auth and auth.validate_password(password) and auth.activated:
             # We use the Primary Key as our identifier once someone has
             # authenticated rather than the username.  You can change what is
@@ -91,6 +93,8 @@ def login(request):
             location=request.route_url(
                 'user_bmark_recent',
                 username=request.user.username))
+    # else:
+    #     print(request.user)
 
     return {
         'message': message,

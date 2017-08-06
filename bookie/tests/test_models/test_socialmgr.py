@@ -16,8 +16,8 @@ class TestSocialMgr(TestCase):
         testing.setUp()
 
     def tearDown(self):
-        testing.tearDown()
         empty_db()
+        testing.tearDown()
 
     def testConnectionsStore(self):
         credentials = {

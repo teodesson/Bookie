@@ -19,6 +19,7 @@ from bookie.tests import BOOKIE_TEST_INI
 from bookie.tests import empty_db
 from bookie.tests import factory
 from bookie.tests import gen_random_word
+from bookie.tests import BaseTestCase
 from bookie.tests.factory import make_bookmark
 
 from datetime import datetime
@@ -31,7 +32,7 @@ LOG = logging.getLogger(__name__)
 API_KEY = None
 
 
-class BookieAPITest(unittest.TestCase):
+class BookieAPITest(BaseTestCase):
     """Test the Bookie API"""
 
     def setUp(self):
@@ -48,8 +49,8 @@ class BookieAPITest(unittest.TestCase):
 
     def tearDown(self):
         """We need to empty the bmarks table on each run"""
-        testing.tearDown()
         empty_db()
+        testing.tearDown()
 
     def _check_cors_headers(self, res):
         """ Make sure that the request has proper CORS headers."""
@@ -381,6 +382,8 @@ class BookieAPITest(unittest.TestCase):
                      'form.submitted': 'true'}
         res = self.testapp.post('/login',
                                 params=user_data)
+        # print(res)
+
         # Add a bookmark
         res = DBSession.execute(
             "SELECT api_key FROM users WHERE username = 'admin'").fetchone()
@@ -753,7 +756,9 @@ class BookieAPITest(unittest.TestCase):
             3,
             "We should have three results coming back: {0}".
             format(len(results)))
+        # print(len(results))
         for bmark in range(len(results)):
+            # print(expected_res[bmark]['username'])
             self.assertTrue(
                 results[bmark]['username'] == expected_res[bmark]['username']
                 and results[bmark]['is_private'] ==

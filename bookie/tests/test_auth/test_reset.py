@@ -21,15 +21,17 @@ import transaction
 
 from mock import patch
 from pyramid import testing
-from unittest import TestCase
+# from unittest import TestCase
 
 from bookie.models import DBSession
 from bookie.models.auth import Activation
 
+from bookie.tests import TestViewBase
+
 LOG = logging.getLogger(__name__)
 
 
-class TestReactivateFunctional(TestCase):
+class TestReactivateFunctional(TestViewBase):
 
     def _reset_admin(self):
         """Reset the admin account"""

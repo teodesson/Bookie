@@ -233,6 +233,8 @@ class api_auth():
 
         # request should be the one and only arg to the view function
         request = args[0]
+        # print('# ### ### ### ??? ### ### ### #')
+        # print(request)
         username = request.matchdict.get('username', None)
         api_key = None
 
