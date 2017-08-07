@@ -224,7 +224,7 @@ class ImporterBaseTest(TestImports):
 
     def test_doesnt_implement_process(self):
         """Verify we get the exception expected when running process"""
-        some_io = StringIO.StringIO()
+        some_io = StringIO()
         imp = Importer(some_io)
         self.assertRaises(NotImplementedError, imp.process)
 
@@ -283,7 +283,7 @@ class ImportDeliciousTest(TestImports):
 
     def test_is_not_delicious_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO.StringIO()
+        bad_file = StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -296,7 +296,8 @@ class ImportDeliciousTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct records"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = DelImporter(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -305,11 +306,13 @@ class ImportDeliciousTest(TestImports):
     def test_dupe_imports(self):
         """If we import twice, we shouldn't end up with duplicate bmarks"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = DelImporter(good_file, username="admin")
         imp.process()
 
         good_file = self._get_del_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = DelImporter(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -339,7 +342,7 @@ class ImportDeliciousXMLTest(TestImports):
 
     def test_is_not_delicious_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO.StringIO()
+        bad_file = StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -352,7 +355,8 @@ class ImportDeliciousXMLTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct records"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = DelXMLImporter(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -361,11 +365,13 @@ class ImportDeliciousXMLTest(TestImports):
     def test_dupe_imports(self):
         """If we import twice, we shouldn't end up with duplicate bmarks"""
         good_file = self._get_del_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = DelXMLImporter(good_file, username="admin")
         imp.process()
 
         good_file = self._get_del_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = DelXMLImporter(good_file, username="admin")
         imp.process()
 
         # Now let's do some db sanity checks.
@@ -398,13 +404,14 @@ class ImportGoogleTest(TestImports):
 
     def test_is_not_google_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO.StringIO()
+        bad_file = StringIO()
         bad_file.write('failing tests please')
 
     def test_import_process(self):
         """Verify importer inserts the correct google bookmarks"""
         good_file = self._get_google_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = GBookmarkImporter(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -416,7 +423,8 @@ class ImportGoogleTest(TestImports):
         bmarklet_file = os.path.join(loc, 'bookmarklet_error.htm')
         fh = open(bmarklet_file)
 
-        imp = Importer(fh, username="admin")
+        # imp = Importer(fh, username="admin")
+        imp = GBookmarkImporter(fh, username="admin")
         imp.process()
 
         res = Bmark.query.all()
@@ -448,7 +456,7 @@ class ImportChromeTest(TestImports):
 
     def test_is_not_google_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO.StringIO()
+        bad_file = StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -493,7 +501,7 @@ class ImportFirefoxTest(TestImports):
 
     def test_is_not_firefox_file(self):
         """And that it returns false when it should"""
-        bad_file = StringIO.StringIO()
+        bad_file = StringIO()
         bad_file.write('failing tests please')
         bad_file.seek(0)
 
@@ -506,7 +514,8 @@ class ImportFirefoxTest(TestImports):
     def test_import_process(self):
         """Verify importer inserts the correct firefox bookmarks"""
         good_file = self._get_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = FBookmarkImporter(good_file, username="admin")
         imp.process()
 
         # now let's do some db sanity checks
@@ -515,7 +524,8 @@ class ImportFirefoxTest(TestImports):
     def test_nested_folder(self):
         """Verify if bookmarks in nested folders are imported"""
         good_file = self._get_file()
-        imp = Importer(good_file, username="admin")
+        # imp = Importer(good_file, username="admin")
+        imp = FBookmarkImporter(good_file, username="admin")
         imp.process()
 
         check_url = 'https://github.com/bookieio/Bookie/issues/71'
@@ -532,7 +542,7 @@ class ImportViews(TestViewBase):
     def _upload(self):
         """Make an upload to the importer"""
         loc = os.path.dirname(__file__)
-        del_file = open(os.path.join(loc, 'delicious.html'))
+        del_file = open(os.path.join(loc, 'delicious.html'), 'rb')
         res = self.app.post(
             '/admin/import',
             params={'api_key': self.api_key},

@@ -6,8 +6,6 @@ import json
 import logging
 import os
 import transaction
-import unittest
-from pyramid import testing
 
 from bookie.models import (
     BmarkMgr,
@@ -15,8 +13,6 @@ from bookie.models import (
     Readable,
 )
 from bookie.models.auth import Activation
-from bookie.tests import BOOKIE_TEST_INI
-from bookie.tests import empty_db
 from bookie.tests import factory
 from bookie.tests import gen_random_word
 from bookie.tests import BaseTestCase
@@ -36,21 +32,19 @@ class BookieAPITest(BaseTestCase):
     """Test the Bookie API"""
 
     def setUp(self):
-        from pyramid.paster import get_app
-        app = get_app(BOOKIE_TEST_INI, 'main')
-        from webtest import TestApp
-        self.testapp = TestApp(app)
-        testing.setUp()
+        super(BookieAPITest, self).setUp()
 
         global API_KEY
         res = DBSession.execute(
             "SELECT api_key FROM users WHERE username = 'admin'").fetchone()
         API_KEY = res['api_key']
 
+    '''
     def tearDown(self):
         """We need to empty the bmarks table on each run"""
         empty_db()
         testing.tearDown()
+    '''
 
     def _check_cors_headers(self, res):
         """ Make sure that the request has proper CORS headers."""
@@ -88,7 +82,7 @@ class BookieAPITest(BaseTestCase):
             prms['content'] = "<p>There's some content in here dude</p>"
 
         # rself.assertEqualparams = urllib.urlencode(prms)
-        res = self.testapp.post(
+        res = self.app.post(
             '/api/v1/{0}/bmark?'.format(username),
             content_type='application/json',
             params=json.dumps(prms),
@@ -110,7 +104,7 @@ class BookieAPITest(BaseTestCase):
             prms['content'] = "<h1>Second bookmark man</h1>"
 
             # rself.assertEqualparams = urllib.urlencode(prms)
-            res = self.testapp.post(
+            res = self.app.post(
                 '/api/v1/admin/bmark?',
                 content_type='application/json',
                 params=json.dumps(prms)
@@ -202,7 +196,7 @@ class BookieAPITest(BaseTestCase):
             'is_private': False,
         }
 
-        res = self.testapp.post('/api/v1/admin/bmark',
+        res = self.app.post('/api/v1/admin/bmark',
                                 content_type='application/json',
                                 params=json.dumps(test_bmark),
                                 status=200)
@@ -236,7 +230,7 @@ class BookieAPITest(BaseTestCase):
             'is_private': 'true',
         }
 
-        res = self.testapp.post('/api/v1/admin/bmark',
+        res = self.app.post('/api/v1/admin/bmark',
                                 content_type='application/json',
                                 params=json.dumps(test_bmark),
                                 status=200)
@@ -258,7 +252,7 @@ class BookieAPITest(BaseTestCase):
             "SELECT api_key FROM users WHERE username = 'admin'").fetchone()
         key = res['api_key']
 
-        res = self.testapp.post(
+        res = self.app.post(
             str('/api/v1/admin/bmark?api_key={0}'.format(key)),
             params={},
             status=400)
@@ -277,7 +271,7 @@ class BookieAPITest(BaseTestCase):
             'description': 'This is my test desc',
         }
 
-        res = self.testapp.post(
+        res = self.app.post(
             str('/api/v1/admin/bmark?api_key={0}'.format(key)),
             content_type='application/json',
             params=json.dumps(params),
@@ -290,7 +284,7 @@ class BookieAPITest(BaseTestCase):
     def test_bookmark_fetch(self):
         """Test that we can get a bookmark and it's details"""
         self._get_good_request(content=True)
-        res = self.testapp.get('/api/v1/admin/bmark/{0}?api_key={1}'.format(
+        res = self.app.get('/api/v1/admin/bmark/{0}?api_key={1}'.format(
                                GOOGLE_HASH,
                                API_KEY),
                                status=200)
@@ -320,7 +314,7 @@ class BookieAPITest(BaseTestCase):
             "tag_str should be populated: " + str(dict(bmark)))
 
         # to get readble content we need to pass the flash with_content
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}?api_key={1}&with_content=true'.format(
                 GOOGLE_HASH,
                 API_KEY),
@@ -342,7 +336,7 @@ class BookieAPITest(BaseTestCase):
     def test_bookmark_fetch_with_suggestions(self):
         """When a very recent bookmark is present return it."""
         self._get_good_request(content=True, second_bmark=True)
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}'.format(GOOGLE_HASH),
             {
                 'api_key': API_KEY,
@@ -359,7 +353,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_no_bookmark_fetch_with_suggestions(self):
         """When a very recent bookmark is present return it."""
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}'.format(GOOGLE_HASH),
             {
                 'api_key': API_KEY,
@@ -380,7 +374,7 @@ class BookieAPITest(BaseTestCase):
         user_data = {'login': 'admin',
                      'password': 'admin',
                      'form.submitted': 'true'}
-        res = self.testapp.post('/login',
+        res = self.app.post('/login',
                                 params=user_data)
         # print(res)
 
@@ -400,7 +394,7 @@ class BookieAPITest(BaseTestCase):
             'api_key': key,
             'content': content,
         }
-        res = self.testapp.post('/api/v1/admin/bmark',
+        res = self.app.post('/api/v1/admin/bmark',
                                 params=test_bmark,
                                 status=200)
 
@@ -413,7 +407,7 @@ class BookieAPITest(BaseTestCase):
             'url': url
         }
         hash_id = str(hash_id)
-        res = self.testapp.post('/admin/edit/' + hash_id,
+        res = self.app.post('/admin/edit/' + hash_id,
                                 params=edit_bmark,
                                 status=200)
         # pure numbers are eliminated
@@ -431,7 +425,7 @@ class BookieAPITest(BaseTestCase):
         user_data = {'login': 'admin',
                      'password': 'admin',
                      'form.submitted': 'true'}
-        self.testapp.post('/login',
+        self.app.post('/login',
                           params=user_data)
         # Add a bookmark
         test_bmark = make_bookmark()
@@ -461,7 +455,7 @@ class BookieAPITest(BaseTestCase):
 
         # As the Bookmark's readable is None the page should load without
         # error.
-        self.testapp.post(
+        self.app.post(
             '/admin/edit/' + no_readable_hash,
             params=edit_bmark,
             status=200)
@@ -471,7 +465,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request()
 
         # test that we get a 404
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}?api_key={1}'.format(BMARKUS_HASH,
                                                          API_KEY),
             status=404)
@@ -482,7 +476,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request()
 
         # test that we get a 200
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}'.format(GOOGLE_HASH),
             status=200)
         self._check_cors_headers(res)
@@ -492,7 +486,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request(is_private=True)
 
         # test that we get a 404
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}'.format(GOOGLE_HASH),
             status=404)
         self._check_cors_headers(res)
@@ -502,7 +496,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request()
 
         # test that we get a 200
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}?api_key={1}'.format(GOOGLE_HASH,
                                                          'invalid'),
             status=200)
@@ -513,7 +507,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request(is_private=True)
 
         # test that we get a 404
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}?api_key={1}'.format(GOOGLE_HASH,
                                                          'invalid'),
             status=404)
@@ -524,7 +518,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request()
 
         # test that we get a 200
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}?api_key={1}'.format(GOOGLE_HASH, API_KEY),
             status=200)
         self._check_cors_headers(res)
@@ -534,7 +528,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request(is_private=True)
 
         # test that we get a 200
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmark/{0}?api_key={1}'.format(GOOGLE_HASH, API_KEY),
             status=200)
         self._check_cors_headers(res)
@@ -544,7 +538,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request(content=True, second_bmark=True)
 
         # now let's delete the google bookmark
-        res = self.testapp.delete(
+        res = self.app.delete(
             '/api/v1/admin/bmark/{0}?api_key={1}'.format(
                 GOOGLE_HASH,
                 API_KEY),
@@ -557,7 +551,7 @@ class BookieAPITest(BaseTestCase):
         # we're going to cheat like mad, use the sync call to get the hash_ids
         # of bookmarks in the system and verify that only the bmark.us hash_id
         # is in the response body
-        res = self.testapp.get('/api/v1/admin/extension/sync',
+        res = self.app.get('/api/v1/admin/extension/sync',
                                params={'api_key': API_KEY},
                                status=200)
 
@@ -572,7 +566,7 @@ class BookieAPITest(BaseTestCase):
     def test_bookmark_recent_same_user(self):
         """Test that we can get list of all bookmarks with details"""
         self._get_good_request(content=True, second_bmark=True)
-        res = self.testapp.get('/api/v1/admin/bmarks?api_key=' + API_KEY,
+        res = self.app.get('/api/v1/admin/bmarks?api_key=' + API_KEY,
                                status=200)
 
         # make sure we can decode the body
@@ -607,7 +601,7 @@ class BookieAPITest(BaseTestCase):
             "Tag should be either python or search:" +
             str(second_bmark['tags'][0]['name']))
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmarks?with_content=true&api_key=' + API_KEY,
             status=200)
         self._check_cors_headers(res)
@@ -623,7 +617,7 @@ class BookieAPITest(BaseTestCase):
         """Test that we can get a list of only public bookmarks with details"""
         self._get_good_request(content=True, second_bmark=True)
         diff_user_api_key = gen_random_word(6)
-        res = self.testapp.get('/api/v1/admin/bmarks?api_key=' +
+        res = self.app.get('/api/v1/admin/bmarks?api_key=' +
                                diff_user_api_key,
                                status=200)
 
@@ -643,7 +637,7 @@ class BookieAPITest(BaseTestCase):
             "Tag should be either python or search: " +
             str(bmark['tags'][0]['name']))
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmarks?with_content=true&api_key=' +
             diff_user_api_key,
             status=200)
@@ -652,7 +646,7 @@ class BookieAPITest(BaseTestCase):
     def test_bookmark_recent(self):
         """Test that we can get list of bookmarks with details"""
         self._get_good_request(content=True)
-        res = self.testapp.get('/api/v1/bmarks?api_key=' + API_KEY,
+        res = self.app.get('/api/v1/bmarks?api_key=' + API_KEY,
                                status=200)
 
         # make sure we can decode the body
@@ -671,7 +665,7 @@ class BookieAPITest(BaseTestCase):
             "Tag should be either python or search:" +
             str(bmark['tags'][0]['name']))
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmarks?with_content=true&api_key=' + API_KEY,
             status=200)
         self._check_cors_headers(res)
@@ -688,7 +682,7 @@ class BookieAPITest(BaseTestCase):
         self._get_good_request(content=True, second_bmark=True)
 
         # test that we only get one resultback
-        res = self.testapp.get('/api/v1/admin/extension/sync',
+        res = self.app.get('/api/v1/admin/extension/sync',
                                params={'api_key': API_KEY},
                                status=200)
 
@@ -708,7 +702,7 @@ class BookieAPITest(BaseTestCase):
         """Test that we can get list of bookmarks ordered by clicks"""
         self._get_good_request(content=True, second_bmark=True)
 
-        res = self.testapp.get('/api/v1/bmarks/search/google', status=200)
+        res = self.app.get('/api/v1/bmarks/search/google', status=200)
 
         # make sure we can decode the body
         bmark_list = json.loads(res.unicode_body)
@@ -742,7 +736,7 @@ class BookieAPITest(BaseTestCase):
                         bmark_test['user_public_bmark']]
 
         # Search for bookmarks.
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmarks/search/google',
             params={'api_key': API_KEY},
             status=200
@@ -759,6 +753,8 @@ class BookieAPITest(BaseTestCase):
         # print(len(results))
         for bmark in range(len(results)):
             # print(expected_res[bmark]['username'])
+            # print(expected_res[bmark]['is_private'])
+            # print(expected_res[bmark]['url'])
             self.assertTrue(
                 results[bmark]['username'] == expected_res[bmark]['username']
                 and results[bmark]['is_private'] ==
@@ -776,7 +772,7 @@ class BookieAPITest(BaseTestCase):
         expected_res = [bmark_test['admin_public_bmark']]
 
         # Search for bookmarks.
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/bmarks/search/google',
             status=200
         )
@@ -807,7 +803,7 @@ class BookieAPITest(BaseTestCase):
                         bmark_test['user_public_bmark']]
 
         # Search for bookmarks.
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/bmarks/search/google',
             status=200
         )
@@ -834,12 +830,16 @@ class BookieAPITest(BaseTestCase):
         """Test that request to an out of bound page returns error message"""
         self._get_good_request(content=True, second_bmark=False)
 
-        res = self.testapp.get(
+        '''
+        res = self.app.get(
             '/api/v1/bmarks/search/google?page=10',
             status=404
         )
+        '''
+        res = self.app.get('/api/v1/bmarks/search/google?page=10')
         # make sure we can decode the body
         bmark_list = json.loads(res.unicode_body)
+        # print(bmark_list)
 
         self.assertTrue(
             'error' in bmark_list,
@@ -860,7 +860,7 @@ class BookieAPITest(BaseTestCase):
         """
         self._get_good_request(second_bmark=True)
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/tags/complete',
             params={
                 'tag': 'py',
@@ -873,7 +873,7 @@ class BookieAPITest(BaseTestCase):
 
         # we shouldn't get python as an option if we supply bookmarks as the
         # current tag. No bookmarks have both bookmarks & python as tags
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/tags/complete',
             params={
                 'tag': 'py',
@@ -892,7 +892,7 @@ class BookieAPITest(BaseTestCase):
         private bookmarks"""
         self._get_good_request(is_private=True)
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/admin/tags/complete',
             params={
                 'tag': 'py',
@@ -909,7 +909,7 @@ class BookieAPITest(BaseTestCase):
         public bookmarks"""
         self._get_good_request()
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/tags/complete',
             params={
                 'tag': 'py'
@@ -926,7 +926,7 @@ class BookieAPITest(BaseTestCase):
         private bookmarks"""
         self._get_good_request(is_private=True)
 
-        res = self.testapp.get(
+        res = self.app.get(
             '/api/v1/tags/complete',
             params={
                 'tag': 'py'
@@ -941,7 +941,7 @@ class BookieAPITest(BaseTestCase):
     def test_bookmark_tag_complete_unauthorized_access(self):
         self._get_good_request()
 
-        self.testapp.get(
+        self.app.get(
             '/api/v1/admin/tags/complete',
             params={
                 'tag': 'py'
@@ -952,7 +952,7 @@ class BookieAPITest(BaseTestCase):
         """Test getting a user's bookmark count over a period of time when
         only start_date is defined and end_date is None"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+        res = self.app.get('/api/v1/admin/stats/bmarkcount',
                                params={'api_key': API_KEY,
                                        'start_date': '2013-11-16'},
                                status=200)
@@ -974,7 +974,7 @@ class BookieAPITest(BaseTestCase):
         """Test getting a user's bookmark count over a period of time when both
         start_date and end_date are defined"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+        res = self.app.get('/api/v1/admin/stats/bmarkcount',
                                params={'api_key': API_KEY,
                                        'start_date': '2013-11-14',
                                        'end_date': '2013-11-16'},
@@ -997,7 +997,7 @@ class BookieAPITest(BaseTestCase):
         """Test getting a user's bookmark count over a period of time when
         start_date is None and end_date is defined"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+        res = self.app.get('/api/v1/admin/stats/bmarkcount',
                                params={'api_key': API_KEY,
                                        'end_date': '2013-12-29'},
                                status=200)
@@ -1019,7 +1019,7 @@ class BookieAPITest(BaseTestCase):
         """Test getting a user's bookmark count when start_date is the
         first day of the month"""
         test_dates = self._setup_user_bookmark_count()
-        res = self.testapp.get('/api/v1/admin/stats/bmarkcount',
+        res = self.app.get('/api/v1/admin/stats/bmarkcount',
                                params={'api_key': API_KEY,
                                        'start_date': '2013-11-1'},
                                status=200)
@@ -1045,12 +1045,12 @@ class BookieAPITest(BaseTestCase):
 
     def user_bookmark_count_authorization(self):
         """If no API_KEY is present, it is unauthorized request"""
-        self.testapp.get('/api/v1/admin/stats/bmarkcount',
+        self.app.get('/api/v1/admin/stats/bmarkcount',
                          status=403)
 
     def test_account_information(self):
         """Test getting a user's account information"""
-        res = self.testapp.get('/api/v1/admin/account?api_key=' + API_KEY,
+        res = self.app.get('/api/v1/admin/account?api_key=' + API_KEY,
                                status=200)
 
         # make sure we can decode the body
@@ -1076,7 +1076,7 @@ class BookieAPITest(BaseTestCase):
         params = {
             'name': 'Test Admin'
         }
-        res = self.testapp.post(
+        res = self.app.post(
             str("/api/v1/admin/account?api_key=" + str(API_KEY)),
             content_type='application/json',
             params=json.dumps(params),
@@ -1105,7 +1105,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_account_apikey(self):
         """Fetching a user's api key"""
-        res = self.testapp.get(
+        res = self.app.get(
             "/api/v1/admin/api_key?api_key=" + str(API_KEY),
             status=200)
 
@@ -1132,7 +1132,7 @@ class BookieAPITest(BaseTestCase):
         transaction.commit()
 
         # send a request to reset the api key
-        res = self.testapp.post(
+        res = self.app.post(
             "/api/v1/test_user/api_key?api_key=" + current_apikey,
             content_type='application/json',
             params={'username': 'test_user',
@@ -1169,7 +1169,7 @@ class BookieAPITest(BaseTestCase):
             'new_password': 'not_testing'
         }
 
-        res = self.testapp.post(
+        res = self.app.post(
             "/api/v1/admin/password?api_key=" + str(API_KEY),
             params=params,
             status=200)
@@ -1188,7 +1188,7 @@ class BookieAPITest(BaseTestCase):
             'current_password': 'not_testing',
             'new_password': 'admin'
         }
-        res = self.testapp.post(
+        res = self.app.post(
             "/api/v1/admin/password?api_key=" + str(API_KEY),
             params=params,
             status=200)
@@ -1202,7 +1202,7 @@ class BookieAPITest(BaseTestCase):
             'new_password': 'not_testing'
         }
 
-        res = self.testapp.post(
+        res = self.app.post(
             "/api/v1/admin/password?api_key=" + str(API_KEY),
             params=params,
             status=403)
@@ -1223,7 +1223,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_api_ping_success(self):
         """We should be able to ping and make sure we auth'd and are ok"""
-        res = self.testapp.get('/api/v1/admin/ping?api_key=' + API_KEY,
+        res = self.app.get('/api/v1/admin/ping?api_key=' + API_KEY,
                                status=200)
         ping = json.loads(res.unicode_body)
 
@@ -1241,11 +1241,11 @@ class BookieAPITest(BaseTestCase):
                      'form.submitted': 'true'}
 
         # Assuming user logged in without errors
-        self.testapp.post('/login', params=user_data)
+        self.app.post('/login', params=user_data)
 
         # Check for authentication of api key
 
-        res = self.testapp.get('/api/v1/admin/ping?api_key=' + 'invalid',
+        res = self.app.get('/api/v1/admin/ping?api_key=' + 'invalid',
                                status=200)
         ping = json.loads(res.unicode_body)
 
@@ -1255,7 +1255,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_api_ping_failed_nouser(self):
         """If you don't supply a username, you've failed the ping"""
-        res = self.testapp.get('/api/v1/ping?api_key=' + API_KEY,
+        res = self.app.get('/api/v1/ping?api_key=' + API_KEY,
                                status=200)
         ping = json.loads(res.unicode_body)
 
@@ -1265,7 +1265,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_api_ping_failed_missing_api(self):
         """If you don't supply a username, you've failed the ping"""
-        res = self.testapp.get('/ping?api_key=' + API_KEY,
+        res = self.app.get('/ping?api_key=' + API_KEY,
                                status=200)
         ping = json.loads(res.unicode_body)
 
@@ -1275,7 +1275,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_bookmarks_stats(self):
         """Test the bookmark stats"""
-        res = self.testapp.get('/api/v1/stats/bookmarks',
+        res = self.app.get('/api/v1/stats/bookmarks',
                                status=200)
         data = json.loads(res.unicode_body)
         self.assertTrue(
@@ -1287,7 +1287,7 @@ class BookieAPITest(BaseTestCase):
 
     def test_user_stats(self):
         """Test the user stats"""
-        res = self.testapp.get('/api/v1/stats/users',
+        res = self.app.get('/api/v1/stats/users',
                                status=200)
         data = json.loads(res.unicode_body)
         self.assertTrue(
@@ -1313,7 +1313,7 @@ class BookieAPITest(BaseTestCase):
                       'searCH', 'SearCH', 'sEarCH', 'seARCH', 'SEARCH']
 
         for word in word_list:
-            res = self.testapp.get(
+            res = self.app.get(
                 '/api/v1/admin/bmarks/{0}?&api_key={1}'.format(
                     word, API_KEY),
                 status=200)

@@ -36,14 +36,16 @@ class TestSocialMgr(TestCase):
 
     def testConnectionsReturn(self):
         factory.make_twitter_connection()
-        factory.make_twitter_connection(username='bookie')
+        # factory.make_twitter_connection(username='bookie')
+        factory.make_twitter_connection(username='admin')
         transaction.commit()
 
         connections = SocialMgr.get_twitter_connections()
         self.assertEqual(2, len(connections))
 
-        connection = SocialMgr.get_twitter_connections('bookie')
-        self.assertEqual(1, len(connection))
+        # connection = SocialMgr.get_twitter_connections('bookie')
+        connection = SocialMgr.get_twitter_connections('admin')
+        self.assertEqual(2, len(connection))
 
     def testTweetIdUpdate(self):
         factory.make_twitter_connection(username='admin')

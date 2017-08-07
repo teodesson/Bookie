@@ -248,7 +248,7 @@ def edit_error(request):
                 return {
                     'new': True,
                     'bmark': bmark,
-                    'message': exc.message,
+                    'message': str(exc),
                     'user': request.user,
                 }
 

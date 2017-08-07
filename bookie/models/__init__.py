@@ -272,7 +272,7 @@ class TagMgr(object):
                             text=True)).encode('ascii', 'ignore'))
                 # print(clean_content)
                 get_tags = extract.TermExtractor()
-                tag_suggest = get_tags(clean_content)
+                tag_suggest = get_tags(clean_content.decode('utf-8'))
                 tag_suggest = sorted(tag_suggest, key=lambda tag_suggest:
                                      tag_suggest[1], reverse=True)
                 for result in tag_suggest:

@@ -2,7 +2,8 @@
 import logging
 import os
 import transaction
-import urllib
+
+from urllib.parse import urlencode
 
 from pyramid import testing
 from unittest import TestCase
@@ -97,7 +98,7 @@ class TestReadable(TestCase):
             #                '8407'),
         }
 
-        for key, url in urls.iteritems():
+        for key, url in urls.items():
             read = ReadUrl.parse(url)
 
             self.assertTrue(
@@ -141,7 +142,7 @@ class TestReadableFulltext(TestCase):
             'content': 'bmark content is the best kind of content man',
         }
 
-        req_params = urllib.urlencode(prms)
+        req_params = urlencode(prms)
         res = self.testapp.post('/api/v1/admin/bmark',
                                 params=req_params)
         session.flush()

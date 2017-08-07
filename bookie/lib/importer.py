@@ -27,7 +27,7 @@ def store_import_file(storage_dir, username, files):
     # save the file off to the temp storage
     out_dir = "{storage_dir}/{randdir}".format(
         storage_dir=storage_dir,
-        randdir=random.choice(string.letters),
+        randdir=random.choice(string.ascii_letters),
     )
 
     # make sure the directory exists
@@ -37,7 +37,7 @@ def store_import_file(storage_dir, username, files):
 
     out_fname = "{0}/{1}.{2}".format(
         out_dir, username, files.filename)
-    out = open(out_fname, 'w')
+    out = open(out_fname, 'wb')
     out.write(files.file.read())
     out.close()
 
@@ -58,6 +58,18 @@ class Importer(object):
 
     def __new__(cls, *args, **kwargs):
         """Overriding new we return a subclass based on the file content"""
+
+        # if 'forced' class...
+        if cls is DelImporter:
+            return super(Importer, cls).__new__(DelImporter)
+        elif cls is DelXMLImporter:
+            return super(Importer, cls).__new__(DelXMLImporter)
+        elif cls is GBookmarkImporter:
+            return super(Importer, cls).__new__(GBookmarkImporter)
+        elif cls is FBookmarkImporter:
+            return super(Importer, cls).__new__(FBookmarkImporter)
+
+        # else...
         if DelImporter.can_handle(args[0]):
             return super(Importer, cls).__new__(DelImporter)
 
@@ -138,6 +150,8 @@ class DelImporter(Importer):
                 not soup.find('h3')):
             can_handle = True
 
+        # print(soup.contents[0])
+        # print(soup.find('h3'))
         return can_handle
 
     @staticmethod
@@ -154,7 +168,7 @@ class DelImporter(Importer):
         """
         delicious_doctype = 'DOCTYPE NETSCAPE-Bookmark-file-1'
 
-        soup = BeautifulSoup(file_io, 'html.parser')
+        soup = BeautifulSoup(file_io, 'lxml')
         can_handle = False
         can_handle = DelImporter._is_delicious_format(soup,
                                                       can_handle,
@@ -162,11 +176,12 @@ class DelImporter(Importer):
 
         # make sure we reset the file_io object so that we can use it again
         file_io.seek(0)
+        # print(can_handle)
         return can_handle
 
     def process(self):
         """Given a file, process it"""
-        soup = BeautifulSoup(self.file_handle, 'html.parser')
+        soup = BeautifulSoup(self.file_handle, 'lxml')
         htmlParser = HTMLParser()
         count = 0
 
@@ -354,7 +369,7 @@ class GBookmarkImporter(Importer):
         if (file_io.closed):
             file_io = open(file_io.name)
         file_io.seek(0)
-        soup = BeautifulSoup(file_io, 'html.parser')
+        soup = BeautifulSoup(file_io, 'lxml')
         can_handle = False
         gbookmark_doctype = "DOCTYPE NETSCAPE-Bookmark-file-1"
         can_handle = GBookmarkImporter._is_google_format(soup,
@@ -374,7 +389,7 @@ class GBookmarkImporter(Importer):
         count = 0
         if (self.file_handle.closed):
             self.file_handle = open(self.file_handle.name)
-        soup = BeautifulSoup(self.file_handle, 'html.parser')
+        soup = BeautifulSoup(self.file_handle, 'lxml')
         if not soup.contents[0] == "DOCTYPE NETSCAPE-Bookmark-file-1":
             raise Exception("File is not a google bookmarks file")
 
@@ -511,7 +526,7 @@ class FBookmarkImporter(Importer):
         if (self.file_handle.closed):
             self.file_handle = open(self.file_handle.name)
 
-        content = self.file_handle.read().decode("UTF-8")
+        content = self.file_handle.read()  # .decode("UTF-8")
         # HACK: Firefox' JSON writer leaves a trailing comma
         # HACK: at the end of the array, which no parser accepts
         if content.endswith("}]},]}"):

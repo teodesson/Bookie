@@ -3,7 +3,7 @@ import json
 import logging
 import random
 
-import urllib
+from urllib.parse import urlencode
 
 from bookie.tests import TestViewBase
 
@@ -46,7 +46,7 @@ class TestExport(TestViewBase):
             'tags': '',
         }
 
-        req_params = urllib.urlencode(prms)
+        req_params = urlencode(prms)
         res = self.app.post(
             '/api/v1/admin/bmark?api_key={0}'.format(self.api_key),
             params=req_params,
