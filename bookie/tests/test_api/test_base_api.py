@@ -731,6 +731,7 @@ class BookieAPITest(BaseTestCase):
         gets back their own bookmarks and other's public bookmarks"""
         test_user, bmark_test = self._make_test_bookmarks()
 
+        # print(bmark_test)
         expected_res = [bmark_test['admin_public_bmark'],
                         bmark_test['admin_private_bmark'],
                         bmark_test['user_public_bmark']]
@@ -752,14 +753,21 @@ class BookieAPITest(BaseTestCase):
             format(len(results)))
         # print(len(results))
         for bmark in range(len(results)):
-            # print(expected_res[bmark]['username'])
-            # print(expected_res[bmark]['is_private'])
-            # print(expected_res[bmark]['url'])
-            self.assertTrue(
+            '''
+            print("{0} | {1}".format(results[bmark]['username'],
+                                     expected_res[bmark]['username']))
+            print("{0} | {1}".format(results[bmark]['is_private'],
+                                     expected_res[bmark]['is_private']))
+            print("{0} | {1}".format(results[bmark]['url'],
+                                     expected_res[bmark]['url']))
+            '''
+            b_username = \
                 results[bmark]['username'] == expected_res[bmark]['username']
-                and results[bmark]['is_private'] ==
-                expected_res[bmark]['is_private'] and
-                results[bmark]['url'] == expected_res[bmark]['url'],
+            b_private = results[bmark]['is_private'] == \
+                expected_res[bmark]['is_private']
+            b_url = results[bmark]['url'] == expected_res[bmark]['url']
+            self.assertTrue(
+                b_username and b_private and b_url,
                 "We should have a bookmark from {0}".
                 format(expected_res[bmark]['username']))
         self._check_cors_headers(res)
@@ -817,11 +825,21 @@ class BookieAPITest(BaseTestCase):
             "We should have two results coming back: {0}".
             format(len(results)))
         for bmark in range(len(results)):
-            self.assertTrue(
+            '''
+            print("{0} | {1}".format(results[bmark]['username'],
+                                     expected_res[bmark]['username']))
+            print("{0} | {1}".format(results[bmark]['is_private'],
+                                     expected_res[bmark]['is_private']))
+            print("{0} | {1}".format(results[bmark]['url'],
+                                     expected_res[bmark]['url']))
+            '''
+            b_username = \
                 results[bmark]['username'] == expected_res[bmark]['username']
-                and results[bmark]['is_private'] ==
-                expected_res[bmark]['is_private'] and
-                results[bmark]['url'] == expected_res[bmark]['url'],
+            b_private = results[bmark]['is_private'] == \
+                expected_res[bmark]['is_private']
+            b_url = results[bmark]['url'] == expected_res[bmark]['url']
+            self.assertTrue(
+                b_username and b_private and b_url,
                 "We should have a bookmark from {0}".
                 format(expected_res[bmark]['username']))
         self._check_cors_headers(res)

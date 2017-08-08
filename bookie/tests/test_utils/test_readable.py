@@ -27,9 +27,10 @@ class TestReadable(TestCase):
 
         url = 'http://lococast.net/archives/475'
         read = ReadUrl.parse(url)
+        # print(read)
 
         self.assertTrue(
-            read.status == 200, "The status is 200" + str(read.status))
+            read.status == 200, "The status is 200: " + str(read.status))
         self.assertTrue(not read.is_image(), "The content is not an image")
         self.assertTrue(read.content is not None, "Content should not be none")
         self.assertTrue(
@@ -79,7 +80,9 @@ class TestReadable(TestCase):
 
     def test_image_url(self):
         """Verify we don't store, but just tag an image url"""
-        img_url = 'http://www.ndftz.com/nickelanddime.png'
+        # img_url = 'http://www.ndftz.com/nickelanddime.png'
+        img_url = 'http://www.insing.com/bundles/insingfrontend/images/' \
+                  'insing-logo.png'
         read = ReadUrl.parse(img_url)
 
         self.assertTrue(
@@ -100,6 +103,7 @@ class TestReadable(TestCase):
 
         for key, url in urls.items():
             read = ReadUrl.parse(url)
+            # print(read)
 
             self.assertTrue(
                 read.status == 200, "The status is 200: " + str(read.status))

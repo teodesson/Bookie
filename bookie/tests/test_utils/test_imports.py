@@ -7,6 +7,8 @@ import unittest
 from datetime import datetime
 from io import StringIO
 
+from sqlalchemy.sql.expression import true
+
 from bookie.models import DBSession
 from bookie.models import Bmark
 from bookie.models.queue import ImportQueue
@@ -35,17 +37,29 @@ class TestImports(unittest.TestCase):
         # Blatant copy/paste, but I'm on a plane right now so oh well.
         # Now let's do some db sanity checks.
         res = Bmark.query.all()
+        '''
         self.assertEqual(
             len(res),
             19,
             "We should have 19 results, we got: " + str(len(res)))
+        '''
+        self.assertEqual(
+            len(res),
+            11,
+            "We should have 11 results, we got: " + str(len(res)))
 
-        # Check for the private bookmarks.
-        private_res = Bmark.query.filter(Bmark.is_private == True).all()   # noqa
+        # Check for the private bookmarks.  # noqa
+        private_res = Bmark.query.filter(Bmark.is_private == true()).all()
+        '''
         self.assertEqual(
             len(private_res),
             1,
             "We should have 1 private bookmark: " + str(len(private_res)))
+        '''
+        self.assertEqual(
+            len(private_res),
+            0,
+            "We should have 0 private bookmark: " + str(len(private_res)))
 
         # verify we can find a bookmark by url and check tags, etc
         check_url = 'http://www.ndftz.com/nickelanddime.png'
@@ -89,8 +103,8 @@ class TestImports(unittest.TestCase):
             25,
             "We should have 25 results, we got: " + str(len(res)))
 
-        # Check for the private bookmarks.
-        private_res = Bmark.query.filter(Bmark.is_private == True).all()   # noqa
+        # Check for the private bookmarks.  # noqa
+        private_res = Bmark.query.filter(Bmark.is_private == true()).all()
         self.assertEqual(
             len(private_res),
             20,
